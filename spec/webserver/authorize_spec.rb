@@ -56,18 +56,14 @@ describe Authorize do
       end
       context "which is invalid" do
         let(:env) {
-          {
-            'Authorization' => "foobar"
-          }
+          { 'Authorization' => "foobar" }
         }
         it_should_behave_like "rejects the request"
       end
     end
     context "without a token" do
       let(:env) {
-        {
-          'REQUEST_URI' => 'http://localhost'
-        }
+        { 'REQUEST_URI' => 'http://localhost' }
       }
       it_should_behave_like "rejects the request"
     end

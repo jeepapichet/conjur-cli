@@ -25,7 +25,7 @@ describe Server do
   
       server.stub(:find_available_port).and_return port
       server.stub(:sessionid).and_return sessionid
-      Launchy.should_receive(:open).with("http://localhost:#{port}/#{page}##{sessionid}")
+      Launchy.should_receive(:open).with("http://localhost:#{port}/#{page}?sessionid=#{sessionid}")
       
       server.open page
     end

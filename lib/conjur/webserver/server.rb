@@ -24,25 +24,27 @@ module Conjur
     # Launch a web server which serves local files and proxies to the remote Conjur API.
     class Server
       def start(root)
+        require 'rack'
         require 'conjur/webserver/middleware/authorize'
         require 'conjur/webserver/middleware/api_proxy'
         
         sessionid = self.sessionid
-        app = Rack::Builder.new do
+        app = Rack::Builder.app do
           use Conjur::WebServer::Middleware::Authorize, sessionid
-          use Conjur::WebServer::Middleware::APIProxy
-          use Rack::Static, urls: "", root: root
+          use Conjur::WebServer::Middleware::APIProxy, streaming: false
+          run Rack::File.new(root)
         end
         options = {
-          app: app,
-          port: port
+          app:  app,
+          Port: port,
+          debug: true
         }
         Rack::Server.start(options)
       end
       
       def open(page)
         require 'launchy'
-        url = [ URI.join("http://localhost:#{port}", page).to_s, sessionid ].join("#")
+        url = [ URI.join("http://localhost:#{port}", page).to_s, "sessionid=#{sessionid}" ].join("?")
         Launchy.open(url)
       end
       

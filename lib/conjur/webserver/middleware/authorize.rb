@@ -3,9 +3,11 @@ module Conjur
     module Middleware
       # Verifies that the request contains the authorization token, and then strips it.
       class Authorize
+        attr_reader :app, :sessionid
+        
         def initialize(app, sessionid)
           @app = app
-          @sessionid
+          @sessionid = sessionid
         end
         
         def call(env)
@@ -36,7 +38,7 @@ module Conjur
             require 'cgi'
             require 'uri'
             query = URI.parse(env['REQUEST_URI']).query
-            query && CGI.parse(query)['sessionid']
+            query && ( sessionid = CGI.parse(query)['sessionid'] ) && sessionid[0]
           end
         end
       end
