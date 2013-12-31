@@ -5,80 +5,17 @@
     <script src="http://fb.me/JSXTransformer-0.8.0.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/showdown/0.3.1/showdown.min.js"></script>
     <script src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+    <script src="/js/lib/underscore-min.js"></script>
   </head>
 <body>
     <div id="content"></div>
+    <script type="text/jsx" src="/js/namespace.js"></script>
+    <script type="text/jsx" src="/js/group.js"></script>
+    <script type="text/jsx" src="/js/groupBox.js"></script>
     <script type="text/jsx">
       /**
        * @jsx React.DOM
        */
-var converter = new Showdown.converter();
-var Group = React.createClass({
-  render: function() {
-    return (
-      <tr className="group">
-        <td className="groupId">
-          {this.props.data.id}
-        </td>
-        <td className="ownerId">
-          {this.props.data.ownerid}
-        </td>
-      </tr>
-    );
-  }
-});
-
-var GroupList = React.createClass({
-  render: function() {
-    var groupNodes = this.props.data.map(function (group) {
-      return <Group data={group} />;
-    });
-    return (
-      <table className="groupList">
-        <tr>
-          <th>Id</th>
-          <th>Owner</th>
-        </tr>
-        {groupNodes}
-      </table>
-    );
-  }
-});
-
-var GroupForm = React.createClass({
-  render: function() {
-    return (
-      <div className="groupForm">
-        Hello, world! I am a GroupForm.
-      </div>
-    );
-  }
-});
-
-var GroupBox = React.createClass({
-  loadGroups: function() {
-    $.ajax({
-      url: "/api/groups",
-      success: function(data) {
-        this.setState({data: data});
-      }.bind(this)
-    });
-  },
-  getInitialState: function() {
-    return {data: []};
-  },
-  componentWillMount: function() {
-    this.loadGroups();
-  },  
-  render: function() {
-    return (
-      <div className="groupBox">
-        <h1>Groups</h1>
-        <GroupList data={this.state.data} />
-      </div>
-    );
-  }
-});
 React.renderComponent(
   <GroupBox />,
   document.getElementById('content')
