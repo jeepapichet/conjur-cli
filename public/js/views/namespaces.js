@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
 
-var Namespace = React.createClass({
+var NamespaceListItem = React.createClass({
   render: function() {
     return (
       <option value={this.props.data.id}>{this.props.data.id}</option>
@@ -15,7 +15,7 @@ var NamespaceList = React.createClass({
   },
   render: function() {
     var namespaces = this.props.data.namespaces.map(function (namespace) {
-      return <Namespace data={{id:namespace}}/>;
+      return <NamespaceListItem data={{id:namespace}}/>;
     }).sort();
     return (
       <div>
