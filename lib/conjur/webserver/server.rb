@@ -25,14 +25,28 @@ module Conjur
     class Server
       def start(root)
         require 'rack'
-        require 'conjur/webserver/middleware/authorize'
-        require 'conjur/webserver/middleware/api_proxy'
+        require 'conjur/webserver/login'
+        require 'conjur/webserver/authorize'
+        require 'conjur/webserver/api_proxy'
         
         sessionid = self.sessionid
+        cookie_options = {
+          secret: SecureRandom.hex(32),
+          expire_after: 24*60*60
+        }
         app = Rack::Builder.app do
-          use Conjur::WebServer::Middleware::Authorize, sessionid
-          use Conjur::WebServer::Middleware::APIProxy, streaming: false
-          run Rack::File.new(root)
+          map "/login" do
+            use Rack::Session::Cookie, cookie_options
+            run Conjur::WebServer::Login.new sessionid
+          end
+          map "/api" do
+            use Rack::Session::Cookie, cookie_options
+            use Conjur::WebServer::Authorize, sessionid
+            run Conjur::WebServer::APIProxy.new
+          end
+          map "/" do
+            run Rack::File.new(root)
+          end
         end
         options = {
           app:  app,
@@ -42,9 +56,9 @@ module Conjur
         Rack::Server.start(options)
       end
       
-      def open(page)
+      def open
         require 'launchy'
-        url = [ URI.join("http://localhost:#{port}", page).to_s, "sessionid=#{sessionid}" ].join("?")
+        url = "http://localhost:#{port}/login?sessionid=#{sessionid}"
         Launchy.open(url)
       end
       
@@ -62,6 +76,7 @@ module Conjur
       end
       
       def sessionid
+        require 'securerandom'
         @sessionid ||= SecureRandom.hex(32)
       end
     end

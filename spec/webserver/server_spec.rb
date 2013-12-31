@@ -1,11 +1,11 @@
 require 'conjur/webserver/server'
+require 'rack'
 
 include Conjur::WebServer
 
 describe Server do
   let(:port) { 1001 }
   let(:sessionid) { "the-session-id" }
-  let(:page) { "the/page.html" }
   let(:server) { Server.new }
   
   describe "#start" do
@@ -13,10 +13,8 @@ describe Server do
       require 'rack'
       Rack::Server.should_receive(:start)
       
-      server.start page
+      server.start File.dirname(__FILE__)
     end
-    
-    it "uses a unique session id"
   end
   
   describe "#open" do
@@ -25,9 +23,9 @@ describe Server do
   
       server.stub(:find_available_port).and_return port
       server.stub(:sessionid).and_return sessionid
-      Launchy.should_receive(:open).with("http://localhost:#{port}/#{page}?sessionid=#{sessionid}")
+      Launchy.should_receive(:open).with("http://localhost:#{port}/login?sessionid=#{sessionid}")
       
-      server.open page
+      server.open
     end
   end
 end

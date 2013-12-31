@@ -1,1 +1,89 @@
-Hello World!
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="http://fb.me/react-0.8.0.js"></script>
+    <script src="http://fb.me/JSXTransformer-0.8.0.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/showdown/0.3.1/showdown.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+  </head>
+<body>
+    <div id="content"></div>
+    <script type="text/jsx">
+      /**
+       * @jsx React.DOM
+       */
+var data = [
+  {id: "group/0", description: "This is one group"},
+  {id: "group/1", description: "This is *a second* group"}
+];
+
+var converter = new Showdown.converter();
+var Group = React.createClass({
+  render: function() {
+    var rawMarkup = converter.makeHtml(this.props.children.toString());
+    return (
+      <div className="group">
+        <h2 className="groupId">
+          {this.props.id}
+        </h2>
+        <span dangerouslySetInnerHTML={{__html: rawMarkup}} />
+      </div>
+    );
+  }
+});
+
+var GroupList = React.createClass({
+  render: function() {
+    var groupNodes = this.props.data.map(function (group) {
+      return <Group id={group.id}>{group.id}</Group>;
+    });
+    return (
+      <div className="groupList">
+        {groupNodes}
+      </div>
+    );
+  }
+});
+
+var GroupForm = React.createClass({
+  render: function() {
+    return (
+      <div className="groupForm">
+        Hello, world! I am a GroupForm.
+      </div>
+    );
+  }
+});
+
+var GroupBox = React.createClass({
+  loadGroups: function() {
+    $.ajax({
+      url: "/api/groups",
+      success: function(data) {
+        this.setState({data: data});
+      }.bind(this)
+    });
+  },
+  getInitialState: function() {
+    return {data: []};
+  },
+  componentWillMount: function() {
+    this.loadGroups();
+  },  
+  render: function() {
+    return (
+      <div className="groupBox">
+        <h1>Groups</h1>
+        <GroupList data={this.state.data} />
+        <GroupForm />
+      </div>
+    );
+  }
+});
+React.renderComponent(
+  <GroupBox />,
+  document.getElementById('content')
+);
+    </script>
+  </body>
+</html>

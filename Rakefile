@@ -17,3 +17,7 @@ task :jenkins => ['ci:setup:rspec', :spec, 'ci:setup:cucumber_report_cleanup'] d
 end
 
 task default: [:spec, :features]
+
+task :browserify do
+  `browserify public/js/index.js > public/js/bundle.js`
+end

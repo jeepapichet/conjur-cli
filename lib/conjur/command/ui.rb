@@ -31,7 +31,7 @@ class Conjur::Command::UI < Conjur::Command
         server.start(root)
       end
       sleep 0.5
-      server.open 'index.html'
+      server.open
       thread.join
     end
   end

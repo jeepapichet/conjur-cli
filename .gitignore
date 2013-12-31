@@ -1,3 +1,4 @@
+public/js/bower_components
 .conjurrc
 *.cert
 *.credential
