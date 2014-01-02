@@ -4,15 +4,16 @@ module Conjur
     
     class APIProxy < Rack::Proxy
       def rewrite_env(env)
-        # env["HTTP_HOST"] = "core-ci-conjur.herokuapp.com" # Conjur.configuration.service_url
-        # env["HTTPS"] = "on"
         env["HTTP_X_FORWARDED_SSL"] = "on"
-        env["HTTP_X_FORWARDED_HOST"] = "core-ci-conjur.herokuapp.com"
-        env["HTTP_AUTHORIZATION"] = authorization_header
-        env["PATH_INFO"] = env["PATH_INFO"].gsub(/^\/api\//, "/")
-        if query = env["QUERY_STRING"]
-          env["QUERY_STRING"] = query.gsub(/\bsessionid=.*\b/, "")
+        path = env["PATH_INFO"]
+        if path =~ /^\/api\/([^\/]+)\//
+          app = $1
+          env["HTTP_X_FORWARDED_HOST"] = "#{app}-ci-conjur.herokuapp.com"
+        else
+          env["HTTP_X_FORWARDED_HOST"] = "core-ci-conjur.herokuapp.com"
         end
+        env["HTTP_AUTHORIZATION"] = authorization_header
+        env["PATH_INFO"] = path.gsub(/^\/api\//, "/")
         env.delete "HTTP_HOST"
         
         env
