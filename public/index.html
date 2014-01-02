@@ -17,16 +17,21 @@
     <script src="http://fb.me/JSXTransformer-0.8.0.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/showdown/0.3.1/showdown.min.js"></script>
     <script src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
-    <script src="/js/lib/bootstrap.min.js"></script>
     <script src="/js/lib/underscore-min.js"></script>
+    <script src="/js/lib/backbone.js"></script>
+    <script src="/js/lib/bootstrap.min.js"></script>
   </head>
-<body>
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
+  <body>
+    <div class="container">
+      <div class="navbar navbar-default" role="navigation">
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="javascript: router.navigate('ui/groups', {trigger: true});">Groups</a></li>
+            <li><a href="javascript: router.navigate('ui/layers', {trigger: true});">Layers</a></li>
+            </ul>
+        </div>      
       </div>
-    </div>
-
-    <div class="container" style="margin-top: 60px;">
 
       <div id="content"></div>
 
@@ -36,6 +41,7 @@
     <script src="/js/models/list.js"></script>
     <script type="text/jsx" src="/js/views/namespaces.js"></script>
     <script type="text/jsx" src="/js/views/groups.js"></script>
+    <script type="text/jsx" src="/js/views/layers.js"></script>
     <script type="text/jsx" src="/js/main.js"></script>
   </body>
 </html>

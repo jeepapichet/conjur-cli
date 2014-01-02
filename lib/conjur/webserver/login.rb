@@ -11,7 +11,7 @@ module Conjur
       def call(env)
         if sessionid = token_valid?(env)
           env["rack.session"][:sessionid] = sessionid
-          [ 302, { "Location" => "/index.html" }, ["OK"] ]
+          [ 302, { "Location" => "/ui" }, ["OK"] ]
         else
           [ 403, {}, ["Authorization is missing or invalid"] ]
         end

@@ -2,15 +2,11 @@ if (typeof $ === "undefined") { throw new Error("jQuery is required") }
 
 var ListModel = function(kind){
   var List = function() {
-    this._members = [];
-    this.namespaces = []
+    this._members = null;
+    this.namespaces = null;
   }
   
-  List.prototype.members = function() {
-    return this.filter("");
-  }
-  
-  List.prototype.filter = function(namespace) {
+  List.prototype.members = function(namespace) {
     var result;
     if ( namespace === "" ) {
       result = _.clone(this._members);
@@ -26,6 +22,9 @@ var ListModel = function(kind){
   }
   
   List.prototype.fetch = function(callback) {
+    if ( this._members )
+      return callback(this);
+    
     var self = this;
     $.ajax({
       url: "/api/" + kind,

@@ -28,6 +28,7 @@ module Conjur
         require 'conjur/webserver/login'
         require 'conjur/webserver/authorize'
         require 'conjur/webserver/api_proxy'
+        require 'conjur/webserver/home'
         
         sessionid = self.sessionid
         cookie_options = {
@@ -44,8 +45,13 @@ module Conjur
             use Conjur::WebServer::Authorize, sessionid
             run Conjur::WebServer::APIProxy.new
           end
-          map "/" do
-            run Rack::File.new(root)
+          %w(js css fonts).each do |path|
+            map "/#{path}" do
+              run Rack::File.new(File.join(root, path))
+            end
+          end
+          map "/ui" do
+            run Conjur::WebServer::Home.new(root)
           end
         end
         options = {
