@@ -4,7 +4,7 @@
     <title>Conjur UI</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -26,9 +26,9 @@
       <div class="navbar navbar-default" role="navigation">
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="javascript: router.navigate('ui/groups', {trigger: true});">Groups</a></li>
-            <li><a href="javascript: router.navigate('ui/layers', {trigger: true});">Layers</a></li>
+            <li id="nav-home" class="nav-item"><a href="#">Home</a></li>
+            <li id="nav-groups" class="nav-item"><a href="javascript: router.navigate('ui/groups', {trigger: true});">Groups</a></li>
+            <li id="nav-layers" class="nav-item"><a href="javascript: router.navigate('ui/layers', {trigger: true});">Layers</a></li>
             </ul>
         </div>      
       </div>

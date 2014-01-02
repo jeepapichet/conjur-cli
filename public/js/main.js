@@ -17,6 +17,8 @@ function updateNamespace(ns) {
       
 $(document).ready(function() {
   function activateList(componentFunction) {
+    $(".nav-item").removeClass("active");
+    $("#nav-" + kind).addClass("active");
     lists[kind].fetch(function(list) {
       var component = componentFunction(list);
       components[kind] = component;
