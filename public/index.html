@@ -32,65 +32,10 @@
 
     </div><!-- /.container -->
   
+    <script src="/js/models/namespace.js"></script>
+    <script src="/js/models/list.js"></script>
     <script type="text/jsx" src="/js/views/namespaces.js"></script>
     <script type="text/jsx" src="/js/views/groups.js"></script>
-    <script type="text/jsx">
-/**
- * @jsx React.DOM
- */
-var currentNamespace = "";
-var globalGroups = null;
-var component = null;
-
-function parseGroups(callback) {
-  var groups;
-  if ( currentNamespace === "" ) {
-    groups = globalGroups;
-  }
-  else {
-    groups = globalGroups.filter(function (group) {
-      return group.id.split('/')[0] === currentNamespace;
-    });
-  }
-  groups = _.clone(groups).sort(function(a,b) {
-    return a.id.localeCompare(b.id);
-  });
-  var namespaces = _.unique(globalGroups.map(function (group) {
-    return group.id.split('/')[0];
-  })).sort();
-  callback(namespaces, groups);
-}
-
-function fetchGroups(callback) {
-  if ( globalGroups )
-    return parseGroups(callback);
-    
-  $.ajax({
-    url: "/api/groups",
-    success: function(data) {
-      globalGroups = data;
-      parseGroups(callback);
-    }
-  });
-}
-
-function updateGroups(namespace) {
-  currentNamespace = namespace;
-  fetchGroups(function(namespaces, groups) {
-    component.setState({currentNamespace: currentNamespace, groups: groups});
-  });
-}
-      
-$(document).ready(function() {
-  fetchGroups(function(namespaces, groups) {
-    component = <GroupBox data={{namespaces: namespaces}} />;
-    React.renderComponent(
-      component,
-      document.getElementById('content')
-    );
-    component.setState({currentNamespace: currentNamespace, groups: groups});
-  });
-});
-    </script>
+    <script type="text/jsx" src="/js/main.js"></script>
   </body>
 </html>

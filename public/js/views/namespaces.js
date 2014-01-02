@@ -11,7 +11,7 @@ var NamespaceListItem = React.createClass({
 var NamespaceList = React.createClass({
   handleChange: function(e) {
     var value = e.target.options[e.target.selectedIndex].value;
-    updateGroups(value);
+    updateNamespace(value);
   },
   render: function() {
     var namespaces = this.props.data.namespaces.map(function (namespace) {

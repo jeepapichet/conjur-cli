@@ -37,7 +37,7 @@ var GroupList = React.createClass({
 
 var GroupBox = React.createClass({
   getInitialState: function() {
-    return { currentNamespace: "", groups: [] };
+    return { currentNamespace: "", members: [] };
   },
   render: function() {
     return (
@@ -48,7 +48,7 @@ var GroupBox = React.createClass({
         </div>
         <div className="groupList">
           <h1>Groups</h1>
-          <GroupList data={this.state.groups} />
+          <GroupList data={this.state.members} />
         </div>
       </div>
     );
