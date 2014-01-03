@@ -5,7 +5,8 @@ var namespace = NamespaceModel();
 var kind = "groups";
 var lists = {
   "groups": new ListModel("groups"),
-  "layers": new ListModel("layers")
+  "layers": new ListModel("layers"),
+  "environments": new ListModel("environments")
 };
 var components  = {};
 var router;
@@ -16,6 +17,8 @@ function updateNamespace(ns) {
 }
       
 $(document).ready(function() {
+  _.mixin(_.str.exports());
+  
   function activateList(componentFunction) {
     $(".nav-item").removeClass("active");
     $("#nav-" + kind).addClass("active");
@@ -34,6 +37,7 @@ $(document).ready(function() {
     routes: {
       "ui/groups": "groups",
       "ui/layers": "layers",
+      "ui/environments": "environments",
     },
   
     groups: function() {
@@ -47,6 +51,13 @@ $(document).ready(function() {
       kind = "layers";
       activateList(function(list) {
         return <LayerBox data={{namespaces: list.namespaces}} />
+      });
+    },
+  
+    environments: function() {
+      kind = "environments";
+      activateList(function(list) {
+        return <EnvironmentBox data={{namespaces: list.namespaces}} />
       });
     }
   });

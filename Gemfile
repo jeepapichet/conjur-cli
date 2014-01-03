@@ -6,5 +6,6 @@ gemspec
 gem 'conjur-api', git: 'https://github.com/inscitiv/api-ruby.git', branch: 'master'
 
 group :test, :development do
+  gem 'thin'
   gem 'pry'
 end
