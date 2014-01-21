@@ -42,7 +42,7 @@ $(document).ready(function() {
   }
   
   function activateList(componentFunction) {
-    // console.log("List", kind);
+    /* console.log("List", kind); */
     $(".nav-item").removeClass("active");
     $("#nav-" + kind).addClass("active");
     lists[kind].fetch(function(list) {
@@ -57,11 +57,11 @@ $(document).ready(function() {
   }
   
   function activateRecord(id, componentFunction) {
-    // console.log("Record", kind, " :", id);
+    /* console.log("Record", kind, " :", id); */
     $(".nav-item").removeClass("active");
     $("#nav-" + kind).addClass("active");
     new RecordModel(kind, id).fetch(function(record) {
-      // console.log(record.object);
+      /* console.log(record.object); */
       
       function doRenderComponent(component) {
         React.renderComponent(
@@ -116,7 +116,6 @@ $(document).ready(function() {
             });
           },
           function(err, results) {
-            // console.log(err, results);
             if ( err )
               error(err);
             else
