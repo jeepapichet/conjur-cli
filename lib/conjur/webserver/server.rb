@@ -65,6 +65,8 @@ module Conjur
       def open
         require 'launchy'
         url = "http://localhost:#{port}/login?sessionid=#{sessionid}"
+        # as launchy sometimes silently fails, we need human-friendly failover
+        $stderr.puts "UI should be available now at #{url}" 
         Launchy.open(url)
       end
       
