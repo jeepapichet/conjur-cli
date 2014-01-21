@@ -17,6 +17,7 @@
     <script src="/js/lib/JSXTransformer.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/showdown/0.3.1/showdown.min.js"></script>
     <script src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+    <script src="/js/lib/async.js"></script>
     <script src="/js/lib/underscore-min.js"></script>
     <script src="/js/lib/underscore.string.min.js"></script>
     <script src="/js/lib/backbone.js"></script>
@@ -28,9 +29,9 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li id="nav-home" class="nav-item"><a href="#">Home</a></li>
-            <li id="nav-groups" class="nav-item"><a href="javascript: router.navigate('ui/groups', {trigger: true});">Groups</a></li>
-            <li id="nav-layers" class="nav-item"><a href="javascript: router.navigate('ui/layers', {trigger: true});">Layers</a></li>
-            <li id="nav-environments" class="nav-item"><a href="javascript: router.navigate('ui/environments', {trigger: true});">Environments</a></li>
+            <li id="nav-groups" class="nav-item"><a href="/ui/groups">Groups</a></li>
+            <li id="nav-layers" class="nav-item"><a href="/ui/layers">Layers</a></li>
+            <li id="nav-environments" class="nav-item"><a href="/ui/environments">Environments</a></li>
           </ul>
         </div>      
       </div>
@@ -41,9 +42,12 @@
   
     <script src="/js/models/namespace.js"></script>
     <script src="/js/models/list.js"></script>
+    <script src="/js/models/record.js"></script>
     <script type="text/jsx" src="/js/views/generic.js"></script>
     <script type="text/jsx" src="/js/views/namespaces.js"></script>
+    <script type="text/jsx" src="/js/views/group.js"></script>
     <script type="text/jsx" src="/js/views/groups.js"></script>
+    <script type="text/jsx" src="/js/views/layer.js"></script>
     <script type="text/jsx" src="/js/views/layers.js"></script>
     <script type="text/jsx" src="/js/views/environments.js"></script>
     <script type="text/jsx" src="/js/main.js"></script>

@@ -2,7 +2,7 @@
 
 var GenericListItem = React.createClass({
   render: function() {
-    var groupUrl = "/#{this.props.data.kind}/" + encodeURIComponent(this.props.data.record.id);
+    var groupUrl = "/ui/" + this.props.data.kind + "/" + encodeURIComponent(this.props.data.record.id);
     return (
       <tr>
         <td className="id">

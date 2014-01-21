@@ -5,9 +5,14 @@ module Conjur
     class APIProxy < Rack::Proxy
       def rewrite_env(source_env)
         path = source_env["PATH_INFO"]
+        
+        path =~ /^\/([^\/]+)(.*)/
+        app = $1
+        path_remainder = $2
 
-        service_url = if path =~ /^\/api\/([^\/]+)\//
-          app = $1
+        service_url = case app
+        when 'authn', 'authz', 'audit', 'pubkeys'
+          path = path_remainder
           Conjur.configuration.send("#{app}_url")
         else
           Conjur.configuration.send("core_url")
@@ -22,7 +27,7 @@ module Conjur
           "HTTP_X_FORWARDED_SSL" => "on",
           "HTTP_X_FORWARDED_HOST" => host,
           "SCRIPT_NAME" => script,
-          "PATH_INFO" => path.gsub(/^\/api\//, "/"),
+          "PATH_INFO" => path,
           "HTTP_AUTHORIZATION" => authorization_header
         })
 

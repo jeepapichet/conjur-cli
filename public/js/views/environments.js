@@ -2,7 +2,7 @@
 
 var EnvironmentListItem = React.createClass({
   render: function() {
-    var groupUrl = "/environments/" + encodeURIComponent(this.props.data.record.id);
+    var groupUrl = "/ui/environments/" + encodeURIComponent(this.props.data.record.id);
     return (
       <tr>
         <td className="id">
