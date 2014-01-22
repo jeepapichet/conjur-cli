@@ -91,8 +91,14 @@ $(document).ready(function() {
   
     group: function(group) {
       kind = "groups";
-      activateRecord(group, function(record) {
-        return <Group data={record} />;
+      activateRecord(group, function(record, callback) {
+        $.ajax({
+          url: "/api/authz/conjurops/roles/group/" + record.id + "?members",
+          success: function(result) {
+            callback(<Group data={{group: record, members: result}} />);
+          },
+          error: error
+        });
       });
     },
   

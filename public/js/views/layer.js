@@ -1,31 +1,26 @@
 /** @jsx React.DOM */
 
-var HostLink = React.createClass({
-  hostId : function() {
-    return this.props.data.split(':')[2];
-  },
-  
-  hostUrl: function() {
-    return "/ui/hosts/" + encodeURIComponent(this.hostId());
-  },
-  
-  render: function() {
-    return (
-      <a href={this.hostUrl()}>
-        {this.hostId()}
-      </a>
-    );
-  }
-});
-
 var Layer = React.createClass({
   render: function() {
+    function abstractRole(expected) {
+      return function(role) {
+        var tokens = role.split(':');
+        var kind = tokens[1];
+        var abstractKinds = [ '@', 'layer' ];
+        var isAbstract = abstractKinds.indexOf(kind) !== -1;
+        return isAbstract === expected;
+      }
+    }
+    
     var hosts = this.props.data.layer.hosts.map(function (host) {
       return <li>
         <HostLink data={host} />
       </li>
     }.bind(this));
-    var admins = this.props.data.admins.map(function (role) {
+    var admins = this.props.data.admins.filter(abstractRole(false)).map(function (role) {
+      return <li>{role}</li>
+    }.bind(this));
+    var users = this.props.data.users.filter(abstractRole(false)).map(function (role) {
       return <li>{role}</li>
     }.bind(this));
     
@@ -35,7 +30,7 @@ var Layer = React.createClass({
         
         <dl>
           <dt>Owner</dt>
-          <dd>{this.owner}</dd>
+          <dd>{this.props.data.layer.ownerid}</dd>
           <dt>Admins</dt>
           <dd>
             <ul>
@@ -43,7 +38,11 @@ var Layer = React.createClass({
             </ul>
           </dd>
           <dt>Users</dt>
-          <dd>{this.props.data.users}</dd>
+          <dd>
+            <ul>
+              {users}
+            </ul>
+          </dd>
           <dt>Hosts</dt>
           <dd>
             <ul>
