@@ -29,6 +29,7 @@ module Conjur
         require 'conjur/webserver/authorize'
         require 'conjur/webserver/api_proxy'
         require 'conjur/webserver/home'
+        require 'conjur/webserver/audit_stream'
         
         sessionid = self.sessionid
         cookie_options = {
@@ -39,6 +40,11 @@ module Conjur
           map "/login" do
             use Rack::Session::Cookie, cookie_options
             run Conjur::WebServer::Login.new sessionid
+          end
+          map "/api/audit/stream" do
+            use Rack::Session::Cookie, cookie_options
+            use Conjur::WebServer::Authorize, sessionid
+            run Conjur::WebServer::AuditStream.new
           end
           map "/api" do
             use Rack::Session::Cookie, cookie_options

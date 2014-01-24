@@ -39,7 +39,7 @@ module Conjur
         # find it.
         events = []
         while (index = events.find_index{|e| e['event_id'] == @last_event_id}).nil?
-          events = @fetch.call(offset: events.length - 1, limit: 10).reverse.concat events
+          events = @fetch.call(offset: events.length, limit: 10).reverse.concat events
         end
         
         # Update @last_event_id and return the sliced events, reversing it one
