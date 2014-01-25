@@ -40,6 +40,7 @@ module Conjur
       
       def fetch_events env, options
         kind, id = parse_path env
+        puts "parsed #{env['PATH_INFO']} as #{kind}, #{id}"
         method, args = if kind == 'role' && id.nil?
           [:audit_current_role, [options]]
         else
