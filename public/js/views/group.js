@@ -7,7 +7,7 @@ var Group = React.createClass({
         <RoleLink data={member} />
       </li>
     }.bind(this));
-
+    var resourceId = "conjurops:group:" + this.props.data.group.id;
     return (
       <div className="group">
         <h1>Group {this.props.data.group.id}</h1>
@@ -21,6 +21,9 @@ var Group = React.createClass({
             </ul>
           </dd>
         </dl>
+        <div className="audit auditGroup">
+          <AuditBox resources={[ resourceId ]}/>
+        </div>
       </div>
     );
   }
