@@ -34,7 +34,8 @@ module Conjur
       
       # Returns [kind, id]
       def parse_path env
-        %r{^/api/audit/stream/(.*?)(?:/(.*))?$} =~ env["PATH_INFO"]
+        path = env["SCRIPT_NAME"] + env["PATH_INFO"]
+        %r{^/api/audit/stream/(.*?)(?:/(.*))?$} =~ path
         [$1, $2]
       end
       
