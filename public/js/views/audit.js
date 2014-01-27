@@ -5,6 +5,7 @@ var AuditBox = React.createClass({
   },
   componentWillMount: function(){
     this.scroll = true;
+    this.animating = false;
     
     var events = new AuditStream();
     var eventList = new AuditEventList();
@@ -21,9 +22,14 @@ var AuditBox = React.createClass({
       setTimeout(function(){
         var ref, dom;
         if(self.scroll && (ref = self.refs.auditBox) && (dom = ref.getDOMNode())){
-          $(dom).animate({scrollTop: dom.scrollHeight}, 'slow');
+          self.animating = true;
+          $(dom).animate({scrollTop: dom.scrollHeight}, {
+            complete: function(){
+               self.animating = false;
+            }
+          });
         }
-      }, 200);
+      }, 100);
     });
     
     if(this.props.roles){
@@ -52,9 +58,11 @@ var AuditBox = React.createClass({
     // the bottom as new events are added, while in the latter
     // we want to *not* scroll as events are added, and set this.scroll to false.
     var ref, dom;
+    // don't update this stuff while we're animating
+    if(this.animating) return;
+    
     if((ref = this.refs.auditBox) && (dom = ref.getDOMNode())){
       this.scroll = Math.abs((dom.scrollTop + dom.clientHeight) - dom.scrollHeight) <= 2; // fuzzy bottom
-      console.log("scrolled top=" + dom.scrollTop + ", height=" + dom.scrollHeight + ", scroll=" + this.scroll);
     }
   },
   
