@@ -76,3 +76,33 @@ var AuditStream = function(){
 }
 
 window.AuditStream = AuditStream;
+
+// A list of audit events that emits events when new ones are added
+var AuditEventList = function(limit){
+  this.limit = arguments.length == 0 ? 0 : limit;
+  this.events = [];
+  _.extend(this, Backbone.Events);
+}
+
+AuditEventList.prototype.push = function(){
+  var events = this.events,
+      limit  = this.limit,
+      len    = events.length;
+  
+  var ret = events.push.apply(this.events, arguments);
+
+  if(len != events.length){
+    if(limit != 0){
+      events.splice(0, events.length - limit);
+    }
+    this.trigger('change');
+  }
+  return ret;
+};
+
+AuditEventList.prototype.clear = function(){
+  this.events = [];
+  this.trigger('change');
+}
+
+window.AuditEventList = AuditEventList;
