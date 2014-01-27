@@ -1,0 +1,4 @@
+.auditBox {
+    max-height: 350px;
+    overflow-y: scroll;
+}
