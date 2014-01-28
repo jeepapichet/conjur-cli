@@ -1,1 +1,0 @@
-../../../vendor/pace-0.4.17/pace.min.js

@@ -1,1 +1,0 @@
-../../../vendor/sigma-0.1/sigma.min.js
