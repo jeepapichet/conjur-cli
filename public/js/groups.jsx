@@ -12,7 +12,7 @@ var Entity = React.createClass({
       case "group":
         return Group(this.props);
       default:
-        return (<li>{id}</li>);
+        return (<li className={"entity " + kind}>{id}</li>);
     }
   }
 });
