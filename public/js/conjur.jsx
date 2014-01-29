@@ -3,7 +3,7 @@
 var Conjur = React.createClass({
   render: function() {
     return (
-      <Groups />
+      <CoreEntityList url="/api/groups" />
     );
   }
 });

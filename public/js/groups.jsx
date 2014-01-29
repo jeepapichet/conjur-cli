@@ -1,59 +1,77 @@
 /** @jsx React.DOM */
 
+var Entity = React.createClass({
+  render: function() {
+    var kind, account, id;
+    var pieces = this.props.roleid.split(":");
+    account = pieces[0];
+    kind = pieces[1];
+    id = pieces[2];
+
+    switch(kind) {
+      case "group":
+        return Group(this.props);
+      default:
+        return (<li>{id}</li>);
+    }
+  }
+});
+
 var Group = React.createClass({
   getInitialState: function() {
     return { members: [] };
   },
 
   render: function() {
-    console.log(this.state);
+    var id = this.props.roleid.split(":")[2];
     return (
-      <li className="entity group" key={this.props.id}>
-        <h2>{this.props.id}</h2>
-        <ul>{
-          this.state.members.map(function(member) {
-            return <li>{member}</li>;
-          })
-        }</ul>
+      <li className="entity group" key={this.props.roleid}>
+        <h2>{id}</h2>
+        <EntityList entities={this.state.members} />
       </li>
     );
   },
 
   componentWillMount: function() {
-    var account = this.props.roleid.split(":")[0];
+    var parts = this.props.roleid.split(":");
 
-    $.get("/api/authz/" + account + "/roles/group/" + encodeURIComponent(this.props.id) + "/?members",
+    $.get("/api/authz/" + parts[0] + "/roles/group/" + encodeURIComponent(parts[2]) + "/?members",
       function(members) {
         console.log(arguments);
         this.setState({
-          members: members.map(function(data) { return data.member; })
+          members: members.map(function(data) { return { roleid: data.member }; })
         });
       }.bind(this)
     );
   }
 });
 
-var Groups = React.createClass({
+var EntityList = React.createClass({
+  render: function() {
+    return (
+      <ul className="entity-list">{
+        this.props.entities.map(function(entity) {
+          entity.key = entity.roleid;
+          return Entity(entity);
+        })
+      }</ul>
+    );
+  }
+})
+
+var CoreEntityList = React.createClass({
   getInitialState: function() {
-    return { groups: [] };
+    return { entities: [] };
   },
 
   render: function() {
-    var groupNodes = this.state.groups.map(function(group) {
-      group.key = group.id;
-      return Group(group);
-    });
-    return (
-      <ul className="entity-list">
-        {groupNodes}
-      </ul>
-    );
+    return <EntityList entities={this.state.entities}/>;
   },
 
   componentWillMount: function() {
-    $.get("/api/groups", function(data) {
+    $.get(this.props.url, function(data) {
         console.log(data);
-        this.setState({groups: data});
+        this.setState({entities: data});
       }.bind(this)
     );
   }
