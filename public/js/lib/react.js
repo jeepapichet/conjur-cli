@@ -1,0 +1,1 @@
+../../../vendor/react-0.8.0/build/react.js

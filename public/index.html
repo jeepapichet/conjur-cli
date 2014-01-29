@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Conjur</title>
+    <script src="/js/lib/react.js"></script>
+    <script src="/js/lib/JSXTransformer.js"></script>
+
+    <script src="/js/conjur.jsx" type="text/jsx"></script>
+  </head>
+  <body>
+    <script type="text/jsx">
+      /** @jsx React.DOM */
+      React.renderComponent(
+        <Conjur />,
+        document.getElementsByTagName('body')[0]
+      );
+    </script>
+  </body>
+</html>
