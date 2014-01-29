@@ -1,3 +1,49 @@
 html {
   font-family: 'Lato', sans-serif;
 };
+
+@entity-border: #99b8c7;
+
+.rounded-corners (@radius: 5px) {
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  -ms-border-radius: @radius;
+  -o-border-radius: @radius;
+  border-radius: @radius;
+};
+
+.entity-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.entity {
+  border: 2px solid;
+  border-color: @entity-border;
+  .rounded-corners;
+  display: block;
+  margin: 0.4em;
+  padding: 1em;
+
+  h2 {
+    text-align: center;
+    font-weight: 300;
+    font-size: 18pt;
+    margin: 0;
+    margin-bottom: 0.6em;
+  };
+
+};
+
+.entity.group {
+  border-style: dashed;
+
+  ul {
+    padding: 0;
+    margin-top: 0.4em;
+  };
+
+  li {
+    display: block;
+  };
+};

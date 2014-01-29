@@ -8,7 +8,7 @@ var Group = React.createClass({
   render: function() {
     console.log(this.state);
     return (
-      <li key={this.props.id}>
+      <li className="entity group" key={this.props.id}>
         <h2>{this.props.id}</h2>
         <ul>{
           this.state.members.map(function(member) {
@@ -44,7 +44,7 @@ var Groups = React.createClass({
       return Group(group);
     });
     return (
-      <ul>
+      <ul className="entity-list">
         {groupNodes}
       </ul>
     );
