@@ -22,7 +22,11 @@ h6,
     overflow-y: scroll;
 }
 
-.navbar {
+#nav-home a {
+  background-image: url('/images/conjur-logo.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  padding-left: 12em;
 }
 
 .navbar:after {
