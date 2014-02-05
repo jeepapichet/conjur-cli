@@ -63,7 +63,7 @@ module Conjur
         options = {
           app:  app,
           Port: port,
-          debug: true
+          debug: false
         }
         Rack::Server.start(options)
       end
