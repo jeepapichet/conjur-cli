@@ -27,3 +27,4 @@ tmp
 .idea
 .rvmrc
 update_ci.sh
+.DS_Store
