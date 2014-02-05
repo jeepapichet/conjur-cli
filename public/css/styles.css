@@ -106,7 +106,7 @@ dl {
 
 dd {
   /* top left bottom (I always forget that) */
-  margin: 0.3em 2em 1em;
+  margin: 0.3em 1.4em 1em;
 }
 
 .group ul {
@@ -143,4 +143,20 @@ dl.propertyList dd {
   border: #ddd solid thin;
   border-radius: 0.5em;
   color: #2d2d2d;
+}
+
+.host {
+  background-image: url('/images/icon-client-pc.svg');
+  padding-left: 1.7em;
+  background-size: 1.6em;
+  background-repeat: no-repeat;
+  background-position: 0em -0.1em;
+}
+
+.user {
+  background-image: url('/images/icon-person.svg');
+  padding-left: 1.7em;
+  background-size: 1.6em;
+  background-repeat: no-repeat;
+  background-position: 0em -0.2em;
 }
