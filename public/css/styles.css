@@ -105,3 +105,20 @@ dl.propertyList dd {
     margin-left: 6px;
 }
 
+.namespaceList {
+  float: right;
+}
+
+.namespaceList h2, .namespaceList div {
+  font-size: 1em;
+  display: inline;
+  margin: 0.5em;
+  color: #2d2d2d;
+}
+
+.namespaceList select {
+  background: white;
+  border: #ddd solid thin;
+  border-radius: 0.5em;
+  color: #2d2d2d;
+}
