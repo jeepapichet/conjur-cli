@@ -1,5 +1,11 @@
 body {
   font-family: Lato, sans-serif;
+  color: #1d1d1d;
+  font-size: 12pt;
+}
+
+a {
+  color: #075891;
 }
 
 h1,
@@ -29,8 +35,12 @@ h6,
   padding-left: 12em;
 }
 
+#content {
+  padding: 1em;
+}
+
 .navbar:after {
-  content: '';
+  content: "\200C";
   background-image: url('/images/icon-service-dots.svg');
   background-size: cover;
   background-repeat: no-repeat;
@@ -60,4 +70,26 @@ h6,
 @keyframes pace-pulse {
   0% { opacity: 0; }
   100% { opacity: 1; }
+}
+
+thead {
+  border-bottom: #999999 thin solid;
+}
+
+tbody:before {
+  line-height: 0.1em;
+  content: "\200C";
+  display: block;
+}
+
+th, td {
+  padding: 0.4em;
+}
+
+.groupsList tbody tr td.id {
+  background-image: url('/images/icon-person.svg'), url('/images/icon-person.svg');
+  background-repeat: no-repeat;
+  background-size: 2em;
+  background-position: -0.4em -0.2em, 0.4em 0.2em;
+  padding-left: 2.5em;
 }

@@ -27,11 +27,15 @@ var GenericList = React.createClass({
     }.bind(this));
     return (
       <table className={this.props.data.kind + "List"}>
-        <tr>
-          <th>Id</th>
-          <th>Owner</th>
-        </tr>
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Owner</th>
+          </tr>
+        </thead>
+        <tbody>
         {rows}
+        </tbody>
       </table>
     );
   }
