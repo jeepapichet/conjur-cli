@@ -99,6 +99,24 @@ th, td {
   padding: 0.5em 2.5em;
 }
 
+dl {
+  font-size: 1.2em;
+  margin: 2em 1em;
+}
+
+dd {
+  /* top left bottom (I always forget that) */
+  margin: 0.3em 2em 1em;
+}
+
+.group ul {
+  padding-left: 0em;
+}
+
+.group li {
+  display: block;
+}
+
 dl.propertyList dt {
     display: inline;
     margin-left: 6px;
