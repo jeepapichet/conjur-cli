@@ -8,11 +8,11 @@ var GroupBox = React.createClass({
     return (
       <div className="groupBox">
         <div className="namespaceList">
-          <h1>Namespaces</h1>
+          <h2>Namespaces</h2>
           <NamespaceList data={{currentNamespace: this.state.currentNamespace, namespaces: this.props.data.namespaces}} />
         </div>
         <div className="groupList">
-          <h1>Groups</h1>
+          <h2>Groups</h2>
           <GenericList data={{kind: "groups", members: this.state.members}} />
         </div>
       </div>

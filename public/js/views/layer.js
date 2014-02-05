@@ -26,7 +26,7 @@ var Layer = React.createClass({
     
     return (
       <div className="group">
-        <h1>Layer {this.props.data.layer.id}</h1>
+        <h2>Layer {this.props.data.layer.id}</h2>
         
         <dl>
           <dt>Owner</dt>

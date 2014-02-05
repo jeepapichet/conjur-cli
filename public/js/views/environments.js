@@ -29,11 +29,11 @@ var EnvironmentBox = React.createClass({
     return (
       <div className="environmentBox">
         <div className="namespaceList">
-          <h1>Namespaces</h1>
+          <h2>Namespaces</h2>
           <NamespaceList data={{currentNamespace: this.state.currentNamespace, namespaces: this.props.data.namespaces}} />
         </div>
         <div className="environmentList">
-          <h1>Environments</h1>
+          <h2>Environments</h2>
           <GenericList data={{kind: "environments", members: this.state.members}} />
         </div>
       </div>

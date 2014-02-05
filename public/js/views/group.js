@@ -10,7 +10,7 @@ var Group = React.createClass({
     var resourceId = "conjurops:group:" + this.props.data.group.id;
     return (
       <div className="group">
-        <h1>Group {this.props.data.group.id}</h1>
+        <h2>Group {this.props.data.group.id}</h2>
         <dl>
           <dt>Owner</dt>
           <dd>{this.props.data.group.ownerid}</dd>
