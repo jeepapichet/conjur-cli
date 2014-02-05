@@ -51,7 +51,7 @@ module Conjur
             use Conjur::WebServer::Authorize, sessionid
             run Conjur::WebServer::APIProxy.new
           end
-          %w(js css fonts).each do |path|
+          %w(js css fonts images).each do |path|
             map "/#{path}" do
               run Rack::File.new(File.join(root, path))
             end

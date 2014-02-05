@@ -21,3 +21,39 @@ h6,
     max-height: 350px;
     overflow-y: scroll;
 }
+
+.navbar {
+}
+
+.navbar:after {
+  content: '';
+  background-image: url('/images/icon-service-dots.svg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: top;
+  width: 3.7em;
+  height: 3.7em;
+  top: 0px;
+  right: 0px;
+  position: absolute;
+  opacity: 0;
+  -webkit-transition: opacity 0.5s;
+  -moz-transition: opacity 0.5s;
+  -o-transform: opacity 0.5s;
+  transition: opacity 0.5s;
+}
+
+.pace-running .navbar:after {
+  -webkit-animation: pace-pulse 1s alternate infinite;
+  animation: pace-pulse 1s alternate infinite;
+}
+
+@-webkit-keyframes pace-pulse {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes pace-pulse {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
