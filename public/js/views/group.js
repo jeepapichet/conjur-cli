@@ -22,7 +22,7 @@ var Group = React.createClass({
           </dd>
         </dl>
         <div className="audit auditGroup">
-          <AuditBox resources={[ resourceId ]}/>
+          <AuditBox roles={[resourceId]}/>
         </div>
       </div>
     );

@@ -1,12 +1,25 @@
 /** @jsx React.DOM */
+
+function humanizeArray(array){
+  if(array.length == 0){
+    return "";
+  }
+  if(array.length == 1){
+    return array[0];
+  }
+  var slice = array.slice(0,-1);
+  return slice.join(", ") + " and " + array[array.length - 1];
+}
+
 var AuditBox = React.createClass({
   getInitialState: function(){
-    return { events: [] };
+    return { 
+      active: true,
+      events: []
+    };
   },
+  
   componentWillMount: function(){
-    this.scroll = true;
-    this.animating = false;
-    
     var events = new AuditStream();
     var eventList = new AuditEventList();
     var self = this;
@@ -17,78 +30,150 @@ var AuditBox = React.createClass({
     
     eventList.on('change', function(){
       self.setState({events: eventList.events});
-      // a few millis later we want to scroll down to the 
-      // bottom, *unless* the user scrolled us somewhere else
-      setTimeout(function(){
-        var ref, dom;
-        if(self.scroll && (ref = self.refs.auditBox) && (dom = ref.getDOMNode())){
-          self.animating = true;
-          $(dom).animate({scrollTop: dom.scrollHeight}, {
-            complete: function(){
-               self.animating = false;
-            }
-          });
-        }
-      }, 100);
     });
-    
-    if(this.props.roles){
-      this.props.roles.forEach(function(roleId){
-        events.addRole(roleId);
-      });
-    }
-    
-    if(this.props.resources){
-      this.props.resources.forEach(function(resourceId){
-        events.addResource(resourceId);
-      });
-    }
-    
+
+
     this.events = events;
+    
+    this.addStreams();
+    
   },
   
   componentWillUnmount: function(){
     this.events.removeAll();
   },
   
-  handleScroll: function(){
-    // we want to check whether the user has scrolled the 
-    // box down to the bottom or somewhere else.  In the former
-    // case we set this.scroll to true so that we scroll to
-    // the bottom as new events are added, while in the latter
-    // we want to *not* scroll as events are added, and set this.scroll to false.
-    var ref, dom;
-    // don't update this stuff while we're animating
-    if(this.animating) return;
-    
-    if((ref = this.refs.auditBox) && (dom = ref.getDOMNode())){
-      this.scroll = Math.abs((dom.scrollTop + dom.clientHeight) - dom.scrollHeight) <= 2; // fuzzy bottom
+  toggleActive: function(){
+    if(this.state.active){
+      this.events.removeAll();
+    }else{
+      this.addStreams();
     }
+    this.setState({active: !this.state.active});
+  },
+  
+  addStreams: function(){
+    var events = this.events;
+    (this.props.roles || []).forEach(events.addRole.bind(events));
+    (this.props.resources || []).forEach(events.addResource.bind(events));
+  },
+  
+  showOptions: function(){
+    
+  },
+  
+  title: function(){
+    var resources = this.props.resources || [];
+    var roles = this.props.roles || [];
+    console.log(resources,roles);
+    var title = "Auditing ";
+    if(resources.length){
+      title += "resource" + (resources.length == 1 ? '' : 's') + " " + humanizeArray(resources) + " ";
+      if(roles.length) title += "and ";
+    }
+    if(roles.length){
+      title += "role" + (roles.length == 1 ? '' : 's') + " "  + humanizeArray(roles) + " ";
+    }
+    
+    return title;
   },
   
   render: function(){
     var events = this.state.events.map(function(e){
       return <AuditEvent data={e}/>;
     });
+    var playClasses = React.addons.classSet({
+      'glyphicon': true, 
+      'glyphicon-play': !this.state.active,
+      'glyphicon-pause': this.state.active
+    });
     return (
-      <div className="auditBox" onScroll={this.handleScroll} ref="auditBox">
-        {events}
+      <div className="panel panel-default">
+        <div className="panel-heading">
+          <strong>{this.title()}</strong>
+          <div className="pull-right">
+            <span className="glyphicon glyphicon-cog" onClick={this.showOptions}/>
+              <span onclick={this.toggleActive} className={playClasses}/>
+            </div>  
+         </div>
+        <div className="auditBox">
+          {events}
+        </div>
       </div>
     );
   }
 });
 
 var AuditEvent = React.createClass({
+  getInitialState: function(){
+    return { detailed: false };
+  },
+  
   render: function(){
-    var evt = this.props.data;
-    var title = evt.asset + ":" + evt.action;
-    var what = evt.asset == 'resource' ? 
-      evt.resources[0] : evt.roles[0];
-    var description = " on " + what;
-    return (
-      <div className="alert alert-info auditEvent">
-        <strong>{title}</strong> {description}
+    if(this.state.detailed){
+      return this.renderDetailed();
+    }else{
+      return this.renderCompact();
+    }
+  },
+  
+  titleText: function(){
+    var event = this.props.data;
+    var text = event.action + " on ";
+    var asset = event.asset;
+    
+    var id = asset == 'role' ? _.find(event.roles, function(r){ return r != event.conjur_role; }) : event.resources[0];
+    return text + asset + " " + id;
+  },
+  
+  renderDetailed: function(){
+    return <div className="panel panel-info auditEvent">
+      <div className="panel-heading">
+        <strong className="panel-title">{this.titleText()}</strong>
+        {this.toggleLink()}
       </div>
-    );
+      <div className="panelBody">
+        {this.detailText()}
+      </div>
+   </div>;
+  },
+  
+  detailText: function(){
+    var e = this.props.data;
+    var children = _.flatten(
+      _.keys(e).map(function(k){
+        return [ <dt>{k}</dt>, <dd>{e[k]}</dd>, <br/> ];
+      }));
+    return <dl className="propertyList">{children}</dl>;
+  },
+  
+  
+  renderCompact: function(){
+    return <div className="auditEvent alert alert-info">
+      <strong>{this.titleText()}</strong>
+      {this.toggleLink()}
+    </div>;
+  },
+          
+  toggleLink: function(){
+    return <ToggleLink onChange={this.toggleDetail} data={this.state.detailed}/>    
+  },
+  
+  toggleDetail: function(){
+    this.setState({detailed: !this.state.detailed});
   }
 });
+
+var ToggleLink = React.createClass({
+  render: function(){
+    var up = this.props.data;
+    var classes = React.addons.classSet({
+      'glyphicon': true, 'pull-right': true, 
+      'glyphicon-collapse-up': up,
+      'glyphicon-collapse-down': !up
+    });
+    return <span className={classes} onClick={this.props.onChange}/>
+  }
+});
+
+

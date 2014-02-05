@@ -30,6 +30,7 @@ var AuditStream = function(){
   function sourceUrl(kind, id){
     var url = "/api/audit/stream/" + kind;
     if(id) url += "/" + id;
+    url += "?self=true";
     return url;
   }
   
@@ -67,6 +68,7 @@ var AuditStream = function(){
   
   _.extend(this, Backbone.Events);
   _.extend(this, {
+    add: addSource,
     addRole: function(id){ addSource('role', id); },
     addResource: function(id){ addSource('resource', id); },
     removeRole: function(id){ removeSource('role', id); },

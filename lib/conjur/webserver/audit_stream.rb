@@ -1,4 +1,6 @@
 require 'eventmachine'
+require 'resolv'
+
 module Conjur
   module WebServer
     class AuditStream
@@ -27,9 +29,24 @@ module Conjur
       end
       
       def stream_events env, &block
+        # This could be a lot more "EventMachineish" by using for example
+        # EM::HttpRequest, but putting it in the thread pool should be
+        # good enough for our purposes.
         EM.defer do
-          Conjur::Audit::Follower.new{ |opts| fetch_events(env, opts) }.follow &block
+          follower = Conjur::Audit::Follower.new{|opts| fetch_events(env, opts)}
+          follower.filter{|e| self_event?(env, e)} unless show_self_events?(env)
+          follower.follow &block
         end
+      end
+      
+      # Returns true if this looks like a permission check performed by the
+      # audit service
+      def self_event? env, e
+        e['action'] == 'check' && e['asset'] == 'resource' && e['conjur_role'] == e['role'] && e['role'] == env['conjur.roleid']
+      end
+      
+      def show_self_events? env
+        !!Rack::Request.new(env).params['self']
       end
       
       # Returns [kind, id]
@@ -41,12 +58,12 @@ module Conjur
 
       def fetch_events env, options
         kind, id = parse_path env
-        method, args = if kind == 'role' && id.nil?
-          [:audit_current_role, [options]]
+        args = if kind == 'role' && id.nil?
+          [:audit_current_role, options] 
         else
-          [:"audit_#{kind}", [id, options]]
+          [:"audit_#{kind}", id, options]
         end
-        api.send method, *args
+        api.send *args
       end
       
       def write_events body, events

@@ -30,25 +30,32 @@ module Conjur
         require 'conjur/webserver/api_proxy'
         require 'conjur/webserver/home'
         require 'conjur/webserver/audit_stream'
+        require 'conjur/webserver/conjur_info'
+        require 'pry'
         
         sessionid = self.sessionid
         cookie_options = {
           secret: SecureRandom.hex(32),
           expire_after: 24*60*60
         }
+        
+        api_stack = [
+          [Rack::Session::Cookie, cookie_options],
+          [Conjur::WebServer::Authorize, sessionid],
+          [Conjur::WebServer::ConjurInfo]
+        ]
+        
         app = Rack::Builder.app do
           map "/login" do
             use Rack::Session::Cookie, cookie_options
             run Conjur::WebServer::Login.new sessionid
           end
           map "/api/audit/stream" do
-            use Rack::Session::Cookie, cookie_options
-            use Conjur::WebServer::Authorize, sessionid
+            api_stack.each{|args| use *args}
             run Conjur::WebServer::AuditStream.new
           end
           map "/api" do
-            use Rack::Session::Cookie, cookie_options
-            use Conjur::WebServer::Authorize, sessionid
+            api_stack.each{|args| use *args}
             run Conjur::WebServer::APIProxy.new
           end
           %w(js css fonts images).each do |path|

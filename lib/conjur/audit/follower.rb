@@ -8,6 +8,13 @@ module Conjur
         @fetch = block
       end
       
+      # Filter events received so that only events for which
+      # :block: returns truthy are passed to the block given to 
+      # :#follow:.
+      def filter &filter
+        @filter = filter
+      end
+      
       # Follow audit events, yielding non-empty 
       # arrays of new events to :block: as they 
       # are fetched.
@@ -16,8 +23,12 @@ module Conjur
         
         loop do
           new_events = fetch_new_events
-          block.call new_events unless new_events.empty?
-          sleep 1 if new_events.empty?
+          new_events.select!(&@filter) if @filter
+          if new_events.empty?
+            sleep 1
+          else
+            block.call new_events
+          end
         end
       end
       

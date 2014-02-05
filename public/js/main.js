@@ -43,8 +43,7 @@ $(document).ready(function() {
   
   function activateList(componentFunction) {
     /* console.log("List", kind); */
-    $(".nav-item").removeClass("active");
-    $("#nav-" + kind).addClass("active");
+    setActiveNav(kind);
     lists[kind].fetch(function(list) {
       var component = componentFunction(list);
       components[kind] = component;
@@ -58,8 +57,7 @@ $(document).ready(function() {
   
   function activateRecord(id, componentFunction) {
     /* console.log("Record", kind, " :", id); */
-    $(".nav-item").removeClass("active");
-    $("#nav-" + kind).addClass("active");
+    setActiveNav(kind);
     new RecordModel(kind, id).fetch(function(record) {
       /* console.log(record.object); */
       
@@ -80,6 +78,11 @@ $(document).ready(function() {
     });
   }
   
+  function setActiveNav(name){
+    $('.nav-item').removeClass('active');
+    $('#nav-' + name).addClass('active');
+  }
+  
   var Workspace = Backbone.Router.extend({
     routes: {
       "ui/groups": "groups",
@@ -87,6 +90,7 @@ $(document).ready(function() {
       "ui/layers": "layers",
       "ui/layers/:layer": "layer",
       "ui/environments": "environments",
+      "ui/audit": "audit"
     },
   
     group: function(group) {
@@ -142,6 +146,14 @@ $(document).ready(function() {
       activateList(function(list) {
         return <EnvironmentBox data={{namespaces: list.namespaces}} />
       });
+    },
+    
+    audit: function(){
+      setActiveNav('audit')
+      React.renderComponent(
+        <AuditUI/>,
+        document.getElementById('content')
+      );
     }
   });
   

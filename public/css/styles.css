@@ -94,3 +94,14 @@ th, td {
   background-position: -0.4em -0.2em, 0.4em 0.2em;
   padding-left: 2.5em;
 }
+
+dl.propertyList dt {
+    display: inline;
+    margin-left: 6px;
+}
+
+dl.propertyList dd {
+    display: inline;
+    margin-left: 6px;
+}
+
