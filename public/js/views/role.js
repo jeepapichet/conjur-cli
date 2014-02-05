@@ -2,6 +2,6 @@
 
 var RoleLink = React.createClass({
   render: function() {
-    return <span>{this.props.data.member}</span>;
+    return <span>{this.props.id}</span>;
   }
 });
