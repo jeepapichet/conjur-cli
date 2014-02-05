@@ -42,13 +42,14 @@ h6,
 .navbar:after {
   content: "\200C";
   background-image: url('/images/icon-service-dots.svg');
-  background-size: cover;
+  background-size: contain;
   background-repeat: no-repeat;
-  background-position: top;
-  width: 3.7em;
-  height: 3.7em;
+  background-position: right center;
+  width: 3.2em;
+  height: 3.2em;
   top: 0px;
   right: 0px;
+  bottom: 0px;
   position: absolute;
   opacity: 0;
   -webkit-transition: opacity 0.5s;
