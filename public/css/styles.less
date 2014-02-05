@@ -109,40 +109,44 @@ dd {
   margin: 0.3em 1.4em 1em;
 }
 
-.group ul {
-  padding-left: 0em;
+.group {
+  ul {
+    padding-left: 0em;
+  }
+
+  li {
+    display: block;
+  }
 }
 
-.group li {
-  display: block;
-}
-
-dl.propertyList dt {
+dl.propertyList {
+  dt {
     display: inline;
     margin-left: 6px;
-}
+  }
 
-dl.propertyList dd {
+  dd {
     display: inline;
     margin-left: 6px;
+  }
 }
 
 .namespaceList {
   float: right;
-}
 
-.namespaceList h2, .namespaceList div {
-  font-size: 1em;
-  display: inline;
-  margin: 0.5em;
-  color: #2d2d2d;
-}
+  h2, div {
+    font-size: 1em;
+    display: inline;
+    margin: 0.5em;
+    color: #2d2d2d;
+  }
 
-.namespaceList select {
-  background: white;
-  border: #ddd solid thin;
-  border-radius: 0.5em;
-  color: #2d2d2d;
+  select {
+    background: white;
+    border: #ddd solid thin;
+    border-radius: 0.5em;
+    color: #2d2d2d;
+  }
 }
 
 .host {
@@ -159,4 +163,12 @@ dl.propertyList dd {
   background-size: 1.6em;
   background-repeat: no-repeat;
   background-position: 0em -0.2em;
+}
+
+.group {
+  background-image: url('/images/icon-person.svg'), url('/images/icon-person.svg');
+  background-repeat: no-repeat;
+  background-size: 2em;
+  background-position: -0.4em -0.2em, 0.4em 0.2em;
+  padding-left: 2.5em;
 }
