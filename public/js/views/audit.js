@@ -104,6 +104,16 @@ var AuditBox = React.createClass({
   }
 });
 
+var Timestamp = React.createClass({
+  render: function() {
+    var MILLIS_IN_SECOND = 1000;
+
+    var date = new Date(this.props.timestamp * MILLIS_IN_SECOND);
+
+    return <time datetime={date.toISOString()} title={date.toString()}>{date.toRelativeTime()}</time>
+  }
+});
+
 var AuditEvent = React.createClass({
   getInitialState: function(){
     return { detailed: false };
@@ -152,6 +162,7 @@ var AuditEvent = React.createClass({
     return <div className="auditEvent alert alert-info">
       <strong>{this.titleText()}</strong>
       {this.toggleLink()}
+      <Timestamp timestamp={this.props.data.timestamp} />
     </div>;
   },
           
