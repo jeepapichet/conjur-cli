@@ -110,7 +110,9 @@ var Timestamp = React.createClass({
 
     var date = new Date(this.props.timestamp * MILLIS_IN_SECOND);
 
-    return <time datetime={date.toISOString()} title={date.toString()}>{date.toRelativeTime()}</time>
+    return this.transferPropsTo(
+      <time datetime={date.toISOString()} title={date.toString()}>{date.toRelativeTime()}</time>
+    );
   }
 });
 
