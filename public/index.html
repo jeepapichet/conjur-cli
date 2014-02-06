@@ -35,10 +35,37 @@
       <div class="navbar navbar-default" role="navigation">
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li id="nav-home" class="nav-item"><a href="#">Home</a></li>
-            <li id="nav-groups" class="nav-item"><a href="/ui/groups">Groups</a></li>
-            <li id="nav-layers" class="nav-item"><a href="/ui/layers">Layers</a></li>
-            <li id="nav-environments" class="nav-item"><a href="/ui/environments">Environments</a></li>
+            <li id="nav-home" class="nav-item"><a href="/ui">Dashboard</a></li>
+            <li id="nav-groups" class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                People <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li id="nav-users" class="nav-item"><a href="/ui/users">Users</a></li>
+                <li id="nav-groups" class="nav-item"><a href="/ui/groups">Groups</a></li>
+              </ul>
+            </li>
+            <li id="nav-robots" class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                Robots <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li id="nav-hosts" class="nav-item"><a href="/ui/environments">Hosts</a></li>
+                <li id="nav-layers" class="nav-item"><a href="/ui/layers">Layers</a></li>
+              </ul>
+            </li>
+            <li id="nav-assets" class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                Assets <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li id="nav-hosts" class="nav-item"><a href="/ui/hosts">Hosts</a></li>
+                <li id="nav-layers" class="nav-item"><a href="/ui/layers">Layers</a></li>
+                <li id="nav-environments" class="nav-item"><a href="/ui/environments">Secrets</a></li>
+                <li id="nav-pubkeys" class="nav-item"><a href="/ui/pubkeys">Public Keys</a></li>
+                <li id="nav-vm2" class="nav-item"><a href="/ui/vm2s">VM Manager</a></li>
+              </ul>
+            </li>
             <li id="nav-audit" class="nav-item"><a href="/ui/audit">Audit</a></li>
           </ul>
         </div>      
