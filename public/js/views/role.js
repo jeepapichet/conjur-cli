@@ -2,7 +2,12 @@
 
 var RoleLink = React.createClass({
   render: function() {
-    var kind = this.props.id.split(":")[1];
-    return <span className={[kind, 'role-link'].join(' ')}>{this.props.id}</span>;
+    var tokens = this.props.id.split(":");
+    var kind = tokens[1];
+    var id = tokens[tokens.length-1];
+    var href = "/ui/" + kind + "s/" + encodeURIComponent(id);
+    return <a className={[kind, 'role-link'].join(' ')} href={href}>
+        {id}
+      </a>;
   }
 });

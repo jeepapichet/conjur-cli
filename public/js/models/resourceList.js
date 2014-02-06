@@ -31,7 +31,6 @@ var ResourceListModel = function(kind){
       success: function(data) {
         self._members = data;
         self._members.forEach(function(member) {
-          console.log(member);
           var idTokens = member.id.split(':');
           member.id = idTokens[idTokens.length-1];
         });
