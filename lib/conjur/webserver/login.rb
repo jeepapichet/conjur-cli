@@ -15,7 +15,8 @@ module Conjur
           configuration = {
             account: Conjur.configuration.account,
             stack: Conjur.configuration.stack,
-            appliance_url: Conjur.configuration.appliance_url
+            appliance_url: Conjur.configuration.appliance_url,
+            login: Conjur::Authn.get_credentials[0]
           }
           response.status = 302
           response.set_cookie('conjur_configuration', value: JSON.pretty_generate(configuration), path: '/')

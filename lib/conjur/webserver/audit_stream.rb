@@ -1,5 +1,5 @@
 require 'eventmachine'
-require 'resolv'
+
 
 module Conjur
   module WebServer

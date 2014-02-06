@@ -41,7 +41,7 @@ module Conjur
         
         api_stack = [
           [Rack::Session::Cookie, cookie_options],
-          [Conjur::WebServer::Authorize, sessionid],
+          #[Conjur::WebServer::Authorize, sessionid],
           [Conjur::WebServer::ConjurInfo]
         ]
         

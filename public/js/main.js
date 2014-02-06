@@ -14,11 +14,13 @@ var lists = {
 var conjurConfiguration;
 var components  = {};
 var router;
+var globalIds;
 
 function updateNamespace(ns) {
   namespace.currentNamespace = ns;
   components[kind].setState({currentNamespace: ns, members: lists[kind].members(ns)});
 }
+
       
 $(document).ready(function() {
   // http://www.quirksmode.org/js/cookies.html
@@ -36,6 +38,8 @@ $(document).ready(function() {
   }
   
   conjurConfiguration = JSON.parse(decodeURIComponent(readCookie('conjur_configuration')).replace(/\+/g, ' '));
+  
+  globalIds = new GlobalIds();
   
   _.mixin(_.str.exports());
 
@@ -194,7 +198,7 @@ $(document).ready(function() {
     audit: function(){
       setActiveNav('audit')
       React.renderComponent(
-        <AuditUI/>,
+        <GlobalAudit/>,
         document.getElementById('content')
       );
     }

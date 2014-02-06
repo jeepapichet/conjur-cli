@@ -189,4 +189,46 @@ var ToggleLink = React.createClass({
   }
 });
 
+var GlobalAudit = React.createClass({
+  componentWillMount: function(){
+    var stream = this.stream = new AuditStream();
+    var events = this.events = new AuditEventList();
+
+    stream.on('message', function(e){
+      events.push(JSON.parse(e.data));
+    });
+
+    events.on('change', function(){
+      this.setState({events: events.events});
+    }.bind(this));
+
+    // Get *all* roles and resources, so we can audit *everything!*
+    globalIds.roles(function(roles){
+      roles.forEach(function(roleId){
+        stream.addRole(roleId);
+      })
+    });
+    globalIds.resources(function(resources){
+      resources.forEach(function(resourceId){
+        stream.addResource(resourceId);
+      })
+    });
+  },
+  
+  getInitialState: function(){
+    return { filters: [], events: [] }
+  },
+  
+  render: function(){
+    var events = this.state.events.map(function(e){ return <AuditEvent data={e}/>; });
+    return <div className="panel panel-default">
+      <div className="panel-heading">
+        <strong>All Audit Events</strong>
+      </div>
+      <div className="auditBox">
+         {events}
+      </div>
+    </div>
+  }
+});
 
