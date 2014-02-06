@@ -50,22 +50,21 @@
                 Robots <span class="caret"></span>
               </a>
               <ul class="dropdown-menu">
-                <li id="nav-hosts" class="nav-item"><a href="/ui/environments">Hosts</a></li>
+                <li id="nav-hosts" class="nav-item"><a href="/ui/hosts">Hosts</a></li>
                 <li id="nav-layers" class="nav-item"><a href="/ui/layers">Layers</a></li>
               </ul>
             </li>
             <li id="nav-assets" class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                Assets <span class="caret"></span>
+                Resources <span class="caret"></span>
               </a>
               <ul class="dropdown-menu">
                 <li id="nav-hosts" class="nav-item"><a href="/ui/hosts">Hosts</a></li>
-                <li id="nav-layers" class="nav-item"><a href="/ui/layers">Layers</a></li>
                 <li id="nav-environments" class="nav-item"><a href="/ui/environments">Secrets</a></li>
-                <li id="nav-pubkeys" class="nav-item"><a href="/ui/pubkeys">Public Keys</a></li>
-                <li id="nav-vm2" class="nav-item"><a href="/ui/vm2s">VM Manager</a></li>
+                <li id="nav-services" class="nav-item"><a href="/ui/services">Services</a></li>
               </ul>
             </li>
+            <li id="nav-permissions" class="nav-item"><a href="/ui/permissions">Permissions</a></li>
             <li id="nav-audit" class="nav-item"><a href="/ui/audit">Audit</a></li>
           </ul>
         </div>      
@@ -78,6 +77,7 @@
   
     <script src="/js/models/namespace.js"></script>
     <script src="/js/models/list.js"></script>
+    <script src="/js/models/services.js"></script>
     <script src="/js/models/record.js"></script>
     <script src="/js/models/audit.js"></script>
     <script type="text/jsx" src="/js/views/audit.js"></script>
@@ -90,6 +90,7 @@
     <script type="text/jsx" src="/js/views/layer.js"></script>
     <script type="text/jsx" src="/js/views/layers.js"></script>
     <script type="text/jsx" src="/js/views/environments.js"></script>
+    <script type="text/jsx" src="/js/views/services.js"></script>
     <script type="text/jsx" src="/js/main.js"></script>
   </body>
 </html>

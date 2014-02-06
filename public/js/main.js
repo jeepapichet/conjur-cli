@@ -6,7 +6,8 @@ var kind = "groups";
 var lists = {
   "groups": new ListModel("groups"),
   "layers": new ListModel("layers"),
-  "environments": new ListModel("environments")
+  "environments": new ListModel("environments"),
+  "services": new ServiceListModel(),
 };
 var conjurConfiguration;
 var components  = {};
@@ -105,6 +106,7 @@ $(document).ready(function() {
       "ui/groups/:group": "group",
       "ui/layers": "layers",
       "ui/layers/:layer": "layer",
+      "ui/services": "services",
       "ui/environments": "environments",
       "ui/audit": "audit"
     },
@@ -161,6 +163,13 @@ $(document).ready(function() {
       kind = "environments";
       activateList(function(list) {
         return <EnvironmentBox data={{namespaces: list.namespaces}} />
+      });
+    },
+    
+    services: function() {
+      kind = "services";
+      activateList(function(list) {
+        return <ServiceBox data={{namespaces: list.namespaces}} />
       });
     },
     

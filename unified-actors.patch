@@ -1,0 +1,96 @@
+diff --git a/public/index.html b/public/index.html
+index 5317a07..8db549a 100644
+--- a/public/index.html
++++ b/public/index.html
+@@ -38,34 +38,26 @@
+             <li id="nav-home" class="nav-item"><a href="/ui">Dashboard</a></li>
+             <li id="nav-groups" class="dropdown">
+               <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+-                People <span class="caret"></span>
++                Actors <span class="caret"></span>
+               </a>
+               <ul class="dropdown-menu">
+                 <li id="nav-users" class="nav-item"><a href="/ui/users">Users</a></li>
+                 <li id="nav-groups" class="nav-item"><a href="/ui/groups">Groups</a></li>
+-              </ul>
+-            </li>
+-            <li id="nav-robots" class="dropdown">
+-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+-                Robots <span class="caret"></span>
+-              </a>
+-              <ul class="dropdown-menu">
+-                <li id="nav-hosts" class="nav-item"><a href="/ui/environments">Hosts</a></li>
++                <li id="nav-hosts" class="nav-item"><a href="/ui/hosts">Hosts</a></li>
+                 <li id="nav-layers" class="nav-item"><a href="/ui/layers">Layers</a></li>
+               </ul>
+             </li>
+             <li id="nav-assets" class="dropdown">
+               <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+-                Assets <span class="caret"></span>
++                Resources <span class="caret"></span>
+               </a>
+               <ul class="dropdown-menu">
+                 <li id="nav-hosts" class="nav-item"><a href="/ui/hosts">Hosts</a></li>
+-                <li id="nav-layers" class="nav-item"><a href="/ui/layers">Layers</a></li>
+                 <li id="nav-environments" class="nav-item"><a href="/ui/environments">Secrets</a></li>
+-                <li id="nav-pubkeys" class="nav-item"><a href="/ui/pubkeys">Public Keys</a></li>
+-                <li id="nav-vm2" class="nav-item"><a href="/ui/vm2s">VM Manager</a></li>
++                <li id="nav-services" class="nav-item"><a href="/ui/services">Services</a></li>
+               </ul>
+             </li>
++            <li id="nav-permissions" class="nav-item"><a href="/ui/permissions">Permissions</a></li>
+             <li id="nav-audit" class="nav-item"><a href="/ui/audit">Audit</a></li>
+           </ul>
+         </div>      
+@@ -78,6 +70,7 @@
+   
+     <script src="/js/models/namespace.js"></script>
+     <script src="/js/models/list.js"></script>
++    <script src="/js/models/services.js"></script>
+     <script src="/js/models/record.js"></script>
+     <script src="/js/models/audit.js"></script>
+     <script type="text/jsx" src="/js/views/audit.js"></script>
+@@ -90,6 +83,7 @@
+     <script type="text/jsx" src="/js/views/layer.js"></script>
+     <script type="text/jsx" src="/js/views/layers.js"></script>
+     <script type="text/jsx" src="/js/views/environments.js"></script>
++    <script type="text/jsx" src="/js/views/services.js"></script>
+     <script type="text/jsx" src="/js/main.js"></script>
+   </body>
+ </html>
+diff --git a/public/js/main.js b/public/js/main.js
+index c1fdb06..9f59a6b 100644
+--- a/public/js/main.js
++++ b/public/js/main.js
+@@ -6,7 +6,8 @@ var kind = "groups";
+ var lists = {
+   "groups": new ListModel("groups"),
+   "layers": new ListModel("layers"),
+-  "environments": new ListModel("environments")
++  "environments": new ListModel("environments"),
++  "services": new ServiceListModel(),
+ };
+ var conjurConfiguration;
+ var components  = {};
+@@ -105,6 +106,7 @@ $(document).ready(function() {
+       "ui/groups/:group": "group",
+       "ui/layers": "layers",
+       "ui/layers/:layer": "layer",
++      "ui/services": "services",
+       "ui/environments": "environments",
+       "ui/audit": "audit"
+     },
+@@ -164,6 +166,13 @@ $(document).ready(function() {
+       });
+     },
+     
++    services: function() {
++      kind = "services";
++      activateList(function(list) {
++        return <ServiceBox data={{namespaces: list.namespaces}} />
++      });
++    },
++    
+     audit: function(){
+       setActiveNav('audit')
+       React.renderComponent(
