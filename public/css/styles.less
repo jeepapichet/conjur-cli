@@ -87,11 +87,15 @@ th, td {
   padding: 0.4em;
 }
 
-.group h2, .groupsList tbody tr td.id {
+.group-icon(@size, @x-offset: 0.2em, @y-offset: 0.07em) {
   background-image: url('/images/icon-person.svg'), url('/images/icon-person.svg');
   background-repeat: no-repeat;
-  background-size: 2em;
-  background-position: -0.4em -0.2em, 0.4em 0.2em;
+  background-size: @size;
+  background-position: (-0.2 * @size + @x-offset) (-0.1 * @size + @y-offset), (0.2 * @size + @x-offset) (0.1 * @size + @y-offset);
+}
+
+.group h2, .groupsList tbody tr td.id {
+  .group-icon(2em);
   padding-left: 2.5em;
 }
 
@@ -149,26 +153,29 @@ dl.propertyList {
   }
 }
 
-.host {
-  background-image: url('/images/icon-client-pc.svg');
+.role-link-padding {
   padding-left: 1.7em;
-  background-size: 1.6em;
-  background-repeat: no-repeat;
-  background-position: 0em -0.1em;
 }
 
-.user {
-  background-image: url('/images/icon-person.svg');
-  padding-left: 1.7em;
+.role-link-icon(@icon) {
+  .role-link-padding;
+
+  background-image: url(@icon);
   background-size: 1.6em;
   background-repeat: no-repeat;
-  background-position: 0em -0.2em;
 }
 
-.group {
-  background-image: url('/images/icon-person.svg'), url('/images/icon-person.svg');
-  background-repeat: no-repeat;
-  background-size: 2em;
-  background-position: -0.4em -0.2em, 0.4em 0.2em;
-  padding-left: 2.5em;
+.host.role-link {
+  .role-link-icon('/images/icon-client-pc.svg');
+  background-position-y: -0.1em;
+}
+
+.user.role-link {
+  .role-link-icon('/images/icon-person.svg');
+  background-position-y: -0.2em;
+}
+
+.group.role-link {
+  .role-link-padding;
+  .group-icon(1.2em);
 }
