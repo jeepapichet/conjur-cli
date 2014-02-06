@@ -11,7 +11,16 @@ module Conjur
       def call(env)
         if sessionid = token_valid?(env)
           env["rack.session"][:sessionid] = sessionid
-          [ 302, { "Location" => "/ui" }, ["OK"] ]
+          response = Rack::Response.new(env)
+          configuration = {
+            account: Conjur.configuration.account,
+            stack: Conjur.configuration.stack,
+            appliance_url: Conjur.configuration.appliance_url
+          }
+          response.status = 302
+          response.set_cookie('conjur_configuration', value: JSON.pretty_generate(configuration), path: '/')
+          response['Location'] = "/ui"
+          response.finish
         else
           [ 403, {}, ["Authorization is missing or invalid"] ]
         end

@@ -8,6 +8,7 @@ var lists = {
   "layers": new ListModel("layers"),
   "environments": new ListModel("environments")
 };
+var conjurConfiguration;
 var components  = {};
 var router;
 
@@ -17,6 +18,22 @@ function updateNamespace(ns) {
 }
       
 $(document).ready(function() {
+  // http://www.quirksmode.org/js/cookies.html
+  function readCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ')
+      c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) == 0)
+        return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+  }
+  
+  conjurConfiguration = JSON.parse(decodeURIComponent(readCookie('conjur_configuration')).replace(/\+/g, ' '));
+  
   _.mixin(_.str.exports());
 
   // Use delegation to avoid initial DOM selection and allow all matching elements to bubble
@@ -68,7 +85,6 @@ $(document).ready(function() {
         );
       }
       
-      
       var component = componentFunction(record.object, function(result) {
         doRenderComponent(result);
       });
@@ -97,7 +113,7 @@ $(document).ready(function() {
       kind = "groups";
       activateRecord(group, function(record, callback) {
         $.ajax({
-          url: "/api/authz/conjurops/roles/group/" + record.id + "?members",
+          url: "/api/authz/" + conjurConfiguration.account + "/roles/group/" + record.id + "?members",
           success: function(result) {
             callback(<Group data={{group: record, members: result}} />);
           },
@@ -120,7 +136,7 @@ $(document).ready(function() {
         async.map(['@/layer/' + record.id + '/use_host', '@/layer/' + record.id + '/admin_host' ],
           function(role, cb) {
             $.ajax({
-              url: "/api/authz/conjurops/roles/" + role + "?members",
+              url: "/api/authz/" + conjurConfiguration.account + "/roles/" + role + "?members",
               success: function(result) { cb(null, result) },
               error: cb
             });
@@ -133,7 +149,7 @@ $(document).ready(function() {
           });
       });
     },
-  
+
     layers: function() {
       kind = "layers";
       activateList(function(list) {
