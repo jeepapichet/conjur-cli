@@ -28,10 +28,7 @@ var EnvironmentBox = React.createClass({
   render: function() {
     return (
       <div className="environmentBox">
-        <div className="namespaceList">
-          <h2>Namespaces</h2>
-          <NamespaceList data={{currentNamespace: this.state.currentNamespace, namespaces: this.props.data.namespaces}} />
-        </div>
+        <NamespaceFilter currentNamespace={this.state.currentNamespace} namespaces={this.props.data.namespaces} />
         <div className="environmentList">
           <h2>Environments</h2>
           <GenericList data={{kind: "environments", members: this.state.members}} />

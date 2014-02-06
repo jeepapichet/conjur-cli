@@ -7,10 +7,7 @@ var LayerBox = React.createClass({
   render: function() {
     return (
       <div className="layerBox">
-        <div className="namespaceList">
-          <h2>Namespaces</h2>
-          <NamespaceList data={{currentNamespace: this.state.currentNamespace, namespaces: this.props.data.namespaces}} />
-        </div>
+        <NamespaceFilter currentNamespace={this.state.currentNamespace} namespaces={this.props.data.namespaces} />
         <div className="layerList">
           <h2>Layers</h2>
           <GenericList data={{kind: "layers", members: this.state.members}} />

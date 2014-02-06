@@ -7,10 +7,7 @@ var GroupBox = React.createClass({
   render: function() {
     return (
       <div className="groupBox">
-        <div className="namespaceList">
-          <h2>Namespace filter:</h2>
-          <NamespaceList data={{currentNamespace: this.state.currentNamespace, namespaces: this.props.data.namespaces}} />
-        </div>
+        <NamespaceFilter currentNamespace={this.state.currentNamespace} namespaces={this.props.data.namespaces} />
         <div className="groupList">
           <h2>Groups</h2>
           <GenericList data={{kind: "groups", members: this.state.members}} />
