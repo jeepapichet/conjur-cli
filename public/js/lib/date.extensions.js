@@ -1,1 +1,1 @@
-../../../vendor/date.extensions.js
+../../../vendor/javascript-relative-time-helpers/date.extensions.js

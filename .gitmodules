@@ -16,3 +16,6 @@
 [submodule "vendor/underscore.string"]
 	path = vendor/underscore.string
 	url = https://github.com/epeli/underscore.string.git
+[submodule "vendor/javascript-relative-time-helpers"]
+	path = vendor/javascript-relative-time-helpers
+	url = https://github.com/jherdman/javascript-relative-time-helpers.git
