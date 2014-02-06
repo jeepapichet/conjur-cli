@@ -52,7 +52,7 @@ h6,
   width: 3.2em;
   height: 3.2em;
   top: 0px;
-  right: 0px;
+  left: 9.4em;
   bottom: 0px;
   position: absolute;
   opacity: 0;
@@ -60,21 +60,30 @@ h6,
   -moz-transition: opacity 0.5s;
   -o-transform: opacity 0.5s;
   transition: opacity 0.5s;
+  -webkit-animation: pace-pulse 2.5s alternate infinite none cubic-bezier(1, 0, 0.73, 1);
+  animation: pace-pulse 2.5s alternate infinite none cubic-bezier(1, 0, 0.73, 1);
 }
 
 .pace-running .navbar:after {
-  -webkit-animation: pace-pulse 1s alternate infinite;
-  animation: pace-pulse 1s alternate infinite;
+  opacity: 1;
 }
 
 @-webkit-keyframes pace-pulse {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  0% {
+    -webkit-transform: scale(1);
+  }
+  100% {
+    -webkit-transform: scale(0.8);
+  }
 }
 
 @keyframes pace-pulse {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0.8);
+  }
 }
 
 thead {
