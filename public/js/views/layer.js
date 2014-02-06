@@ -12,6 +12,8 @@ var Layer = React.createClass({
       }
     }
     
+    var layerId = conjurConfiguration.account + ':layer:' +  this.props.data.layer.id;
+    
     var hosts = this.props.data.layer.hosts.map(function (host) {
       return <li>
         <HostLink data={host} />
@@ -50,6 +52,10 @@ var Layer = React.createClass({
             </ul>
           </dd>
         </dl>
+        
+        <div className="audit auditLayer">
+          <AuditBox roles={[layerId]} resources={[layerId]}/>
+        </div>
       </div>
     );
   }
