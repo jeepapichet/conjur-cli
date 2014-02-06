@@ -1,6 +1,6 @@
 if (typeof $ === "undefined") { throw new Error("jQuery is required") }
 
-var ServiceListModel = function(){
+var ResourceListModel = function(kind){
   var List = function() {
     this._members = null;
     this.namespaces = null;
@@ -27,10 +27,11 @@ var ServiceListModel = function(){
     
     var self = this;
     $.ajax({
-      url: "/api/authz/" + conjurConfiguration.account + "/resources/service",
+      url: "/api/authz/" + encodeURIComponent(conjurConfiguration.account) + "/resources/" + encodeURIComponent(kind),
       success: function(data) {
         self._members = data;
         self._members.forEach(function(member) {
+          console.log(member);
           var idTokens = member.id.split(':');
           member.id = idTokens[idTokens.length-1];
         });

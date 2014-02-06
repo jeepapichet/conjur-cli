@@ -11,7 +11,7 @@ var GenericListItem = React.createClass({
           </a>
         </td>
         <td className="ownerId">
-          {this.props.data.record.ownerid}
+          {this.props.data.record.ownerid || this.props.data.record.owner}
         </td>
       </tr>
     );

@@ -7,7 +7,9 @@ var lists = {
   "groups": new ListModel("groups"),
   "layers": new ListModel("layers"),
   "environments": new ListModel("environments"),
-  "services": new ServiceListModel(),
+  "services": new ResourceListModel("service"),
+  "users": new ResourceListModel("user"),
+  "hosts": new ResourceListModel("host")
 };
 var conjurConfiguration;
 var components  = {};
@@ -102,13 +104,22 @@ $(document).ready(function() {
   
   var Workspace = Backbone.Router.extend({
     routes: {
+      "ui/users": "users",
       "ui/groups": "groups",
       "ui/groups/:group": "group",
+      "ui/hosts": "hosts",
       "ui/layers": "layers",
       "ui/layers/:layer": "layer",
       "ui/services": "services",
       "ui/environments": "environments",
       "ui/audit": "audit"
+    },
+  
+    users: function() {
+      kind = "users";
+      activateList(function(list) {
+        return <UserBox />;
+      });
     },
   
     group: function(group) {
@@ -131,6 +142,13 @@ $(document).ready(function() {
       });
     },
 
+    hosts: function() {
+      kind = "hosts";
+      activateList(function(list) {
+        return <HostBox data={{namespaces: list.namespaces}} />;
+      });
+    },
+  
     layer: function(layer) {
       kind = "layers";
       activateRecord(layer, function(record, callback) {

@@ -1,16 +1,16 @@
 /** @jsx React.DOM */
 
-var ServiceBox = React.createClass({
+var HostBox = React.createClass({
   getInitialState: function() {
     return { currentNamespace: "", members: [] };
   },
   render: function() {
     return (
-      <div className="serviceBox">
+      <div className="hostBox">
         <NamespaceFilter currentNamespace={this.state.currentNamespace} namespaces={this.props.data.namespaces} />
-        <div className="serviceList">
-          <h2>Services</h2>
-          <GenericList data={{kind: "services", members: this.state.members}} />
+        <div className="hostList">
+          <h2>Hosts</h2>
+          <GenericList data={{kind: "hosts", members: this.state.members}} />
         </div>
       </div>
     );
