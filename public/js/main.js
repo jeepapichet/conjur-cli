@@ -6,6 +6,7 @@ var kind = "groups";
 var lists = {
   "groups": new ResourceListModel("group"),
   "layers": new ResourceListModel("layer"),
+  "variables": new VariableListModel(),
   "environments": new ResourceListModel("environment"),
   "services": new ServiceListModel(),
   "users": new UserListModel(),
@@ -115,6 +116,8 @@ $(document).ready(function() {
       "ui/layers": "layers",
       "ui/layers/:layer": "layer",
       "ui/services": "services",
+      "ui/variables": "variables",
+      "ui/variables/:variable": "variable",
       "ui/environments": "environments",
       "ui/audit": "audit"
     },
@@ -178,6 +181,35 @@ $(document).ready(function() {
       kind = "layers";
       activateList(function(list) {
         return <LayerBox data={{namespaces: list.namespaces}} />
+      });
+    },
+    
+    variable: function(variable) {
+      kind = "variables";
+      activateRecord(variable, function(record, callback) {
+          async.map(['execute', 'update'], function(privilege, cb) {
+            $.ajax({
+              url: "/api/authz/" + conjurConfiguration.account + "/roles/allowed_to/" + privilege + "/variable/" + record.id,
+              success: function(result) {
+                cb(null, result);
+              },
+              error: cb
+            });
+          },
+          function(err, results) {
+            if ( err ) return error(err);
+            
+            var updaters = results[1];
+            var fetchers = _.difference(results[0], updaters);
+            callback(<Variable data={{variable: record, fetchers: fetchers, updaters: updaters}} />);
+        });
+      });
+    },
+    
+    variables: function() {
+      kind = "variables";
+      activateList(function(list) {
+        return <VariableBox data={{namespaces: list.namespaces}} />
       });
     },
   
