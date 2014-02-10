@@ -1,89 +1,89 @@
 /** @jsx React.DOM */
 
-function humanizeArray(array){
-  if(array.length == 0){
+function humanizeArray(array) {
+  if (array.length == 0) {
     return "";
   }
-  if(array.length == 1){
+  if (array.length == 1) {
     return array[0];
   }
-  var slice = array.slice(0,-1);
+  var slice = array.slice(0, -1);
   return slice.join(", ") + " and " + array[array.length - 1];
 }
 
 var AuditBox = React.createClass({
-  getInitialState: function(){
-    return { 
+  getInitialState: function () {
+    return {
       active: true,
       events: []
     };
   },
-  
-  componentWillMount: function(){
+
+  componentWillMount: function () {
     var events = new AuditStream();
     var eventList = new AuditEventList();
     var self = this;
-    
-    events.on('message', function(e){
-      eventList.push(JSON.parse(e.data));  
+
+    events.on('message', function (e) {
+      eventList.push(JSON.parse(e.data));
     });
-    
-    eventList.on('change', function(){
+
+    eventList.on('change', function () {
       self.setState({events: eventList.events});
     });
 
 
     this.events = events;
-    
+
     this.addStreams();
-    
+
   },
-  
-  componentWillUnmount: function(){
+
+  componentWillUnmount: function () {
     this.events.removeAll();
   },
-  
-  toggleActive: function(){
-    if(this.state.active){
+
+  toggleActive: function () {
+    if (this.state.active) {
       this.events.removeAll();
-    }else{
+    } else {
       this.addStreams();
     }
     this.setState({active: !this.state.active});
   },
-  
-  addStreams: function(){
+
+  addStreams: function () {
     var events = this.events;
     (this.props.roles || []).forEach(events.addRole.bind(events));
     (this.props.resources || []).forEach(events.addResource.bind(events));
   },
-  
-  showOptions: function(){
-    
+
+  showOptions: function () {
+
   },
-  
-  title: function(){
+
+  title: function () {
     var resources = this.props.resources || [];
     var roles = this.props.roles || [];
-    console.log(resources,roles);
+    console.log(resources, roles);
     var title = "Auditing ";
-    if(resources.length){
+    if (resources.length) {
       title += "resource" + (resources.length == 1 ? '' : 's') + " " + humanizeArray(resources) + " ";
-      if(roles.length) title += "and ";
+      if (roles.length) title += "and ";
     }
-    if(roles.length){
-      title += "role" + (roles.length == 1 ? '' : 's') + " "  + humanizeArray(roles) + " ";
+    if (roles.length) {
+      title += "role" + (roles.length == 1 ? '' : 's') + " " + humanizeArray(roles) + " ";
     }
-    
+
     return title;
   },
-  
-  render: function(){
-    var events = this.state.events.map(function(e){
+
+  render: function () {
+    var events = this.state.events.map(function (e) {
       return <AuditEvent data={e}/>;
     });
     var playClasses = React.addons.classSet({
-      'glyphicon': true, 
+      'glyphicon': true,
       'glyphicon-play': !this.state.active,
       'glyphicon-pause': this.state.active
     });
@@ -93,19 +93,78 @@ var AuditBox = React.createClass({
           <strong>{this.title()}</strong>
           <div className="pull-right">
             <span className="glyphicon glyphicon-cog" onClick={this.showOptions}/>
-              <span onclick={this.toggleActive} className={playClasses}/>
-            </div>  
-         </div>
+            <span onclick={this.toggleActive} className={playClasses}/>
+          </div>
+        </div>
         <div className="auditBox">
           {events}
         </div>
       </div>
-    );
+      );
+  }
+});
+
+var AuditDetails = React.createClass({
+  componentDidMount: function () {
+    var $dom = $(this.getDOMNode());
+    $dom.modal('show').on('hidden.bs.modal', function () {
+      React.unmountComponentAtNode(document.getElementById('modal'));
+    });
+  },
+
+  componentWillUnmount: function () {
+    $(this.getDOMNode()).off('hidden.bs.modal');
+  },
+
+  render: function () {
+    var html = {__html: '&times'}; // having this 'inline' makes my editor barf - jjm
+    return ( <div className="modal fade">
+      <div className="modal-dialog">
+        <div className="modal-content">
+          <div className="modal-header">
+            <button type="button" className="close" data-dismiss="modal" aria-hidden="true"
+            dangerouslySetInnerHTML={html}/>
+            <AuditDetailTitle data={this.props.data}/>
+          </div>
+          <div className="modal-body">
+            <AuditDetailBody data={this.props.data}/>
+          </div>
+        </div>
+      </div>
+    </div>
+      );
+  }
+});
+
+AuditDetails.display = function (event) {
+  React.renderComponent(
+    <AuditDetails data={event} open={true}/>,
+    document.getElementById('modal')
+  );
+};
+
+var AuditDetailTitle = React.createClass({
+  render: function () {
+    return (<h4 className="modal-title">
+      <Timestamp className="audit-timestamp" timestamp={this.props.data.timestamp}/>
+      <span className="audit-title"> { this.props.data.human } </span>
+    </h4>);
+  }
+});
+
+var AuditDetailBody = React.createClass({
+  render: function () {
+    var e = this.props.data;
+    var children = _.flatten(
+      _.keys(e).map(function (k) {
+        return [ <dt>{k}</dt>, <dd>{e[k]}</dd>, <br/> ];
+      }));
+    return <dl className="propertyList">{children}</dl>;
   }
 });
 
 var Timestamp = React.createClass({
-  render: function() {
+  render: function () {
     var MILLIS_IN_SECOND = 1000;
 
     var date = new Date(this.props.timestamp * MILLIS_IN_SECOND);
@@ -117,28 +176,30 @@ var Timestamp = React.createClass({
 });
 
 var AuditEvent = React.createClass({
-  getInitialState: function(){
+  getInitialState: function () {
     return { detailed: false };
   },
-  
-  render: function(){
-    if(this.state.detailed){
+
+  render: function () {
+    if (this.state.detailed) {
       return this.renderDetailed();
-    }else{
+    } else {
       return this.renderCompact();
     }
   },
-  
-  titleText: function(){
+
+  titleText: function () {
     var event = this.props.data;
     var text = event.action + " on ";
     var asset = event.asset;
-    
-    var id = asset == 'role' ? _.find(event.roles, function(r){ return r != event.conjur_role; }) : event.resources[0];
+
+    var id = asset == 'role' ? _.find(event.roles, function (r) {
+      return r != event.conjur_role;
+    }) : event.resources[0];
     return text + asset + " " + id;
   },
-  
-  renderDetailed: function(){
+
+  renderDetailed: function () {
     return <div className="panel panel-info auditEvent">
       <div className="panel-heading">
         <strong className="panel-title">{this.titleText()}</strong>
@@ -147,41 +208,41 @@ var AuditEvent = React.createClass({
       <div className="panelBody">
         {this.detailText()}
       </div>
-   </div>;
+    </div>;
   },
-  
-  detailText: function(){
+
+  detailText: function () {
     var e = this.props.data;
     var children = _.flatten(
-      _.keys(e).map(function(k){
+      _.keys(e).map(function (k) {
         return [ <dt>{k}</dt>, <dd>{e[k]}</dd>, <br/> ];
       }));
     return <dl className="propertyList">{children}</dl>;
   },
-  
-  
-  renderCompact: function(){
+
+
+  renderCompact: function () {
     return <div className="auditEvent alert alert-info">
       <strong>{this.titleText()}</strong>
       {this.toggleLink()}
       <Timestamp timestamp={this.props.data.timestamp} />
     </div>;
   },
-          
-  toggleLink: function(){
-    return <ToggleLink onChange={this.toggleDetail} data={this.state.detailed}/>    
+
+  toggleLink: function () {
+    return <ToggleLink onChange={this.toggleDetail} data={this.state.detailed}/>
   },
-  
-  toggleDetail: function(){
+
+  toggleDetail: function () {
     this.setState({detailed: !this.state.detailed});
   }
 });
 
 var ToggleLink = React.createClass({
-  render: function(){
+  render: function () {
     var up = this.props.data;
     var classes = React.addons.classSet({
-      'glyphicon': true, 'pull-right': true, 
+      'glyphicon': true, 'pull-right': true,
       'glyphicon-collapse-up': up,
       'glyphicon-collapse-down': !up
     });
@@ -190,37 +251,39 @@ var ToggleLink = React.createClass({
 });
 
 var GlobalAudit = React.createClass({
-  componentWillMount: function(){
+  componentWillMount: function () {
     var stream = this.stream = new AuditStream();
     var events = this.events = new AuditEventList();
 
-    stream.on('message', function(e){
+    stream.on('message', function (e) {
       events.push(JSON.parse(e.data));
     });
 
-    events.on('change', function(){
+    events.on('change', function () {
       this.setState({events: events.events});
     }.bind(this));
 
     // Get *all* roles and resources, so we can audit *everything!*
-    globalIds.roles(function(roles){
-      roles.forEach(function(roleId){
+    globalIds.roles(function (roles) {
+      roles.forEach(function (roleId) {
         stream.addRole(roleId);
       })
     });
-    globalIds.resources(function(resources){
-      resources.forEach(function(resourceId){
+    globalIds.resources(function (resources) {
+      resources.forEach(function (resourceId) {
         stream.addResource(resourceId);
       })
     });
   },
-  
-  getInitialState: function(){
+
+  getInitialState: function () {
     return { filters: [], events: [] }
   },
-  
-  render: function(){
-    var events = this.state.events.map(function(e){ return <AuditEvent data={e}/>; });
+
+  render: function () {
+    var events = this.state.events.map(function (e) {
+      return <AuditEvent data={e}/>;
+    });
     return <div className="panel panel-default">
       <div className="panel-heading">
         <strong>All Audit Events</strong>
