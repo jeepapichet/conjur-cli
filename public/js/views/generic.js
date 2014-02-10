@@ -2,16 +2,16 @@
 
 var GenericListItem = React.createClass({
   render: function() {
-    var groupUrl = "/ui/" + this.props.data.kind + "/" + encodeURIComponent(this.props.data.record.id);
+    var recordUrl = "/ui/" + this.props.data.kind + "/" + encodeURIComponent(this.props.data.record.identifier);
     return (
       <tr>
         <td className="id">
-          <a href={groupUrl}>
+          <a href={recordUrl}>
             {this.props.data.record.identifier}
           </a>
         </td>
         <td className="ownerId">
-          {this.props.data.record.ownerid || this.props.data.record.owner}
+          <RoleLink id={this.props.data.record.ownerid || this.props.data.record.owner} />
         </td>
       </tr>
     );

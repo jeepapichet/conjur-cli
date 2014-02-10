@@ -4,9 +4,9 @@
 var namespace = NamespaceModel();
 var kind = "groups";
 var lists = {
-  "groups": new ListModel("groups"),
-  "layers": new ListModel("layers"),
-  "environments": new ListModel("environments"),
+  "groups": new ResourceListModel("group"),
+  "layers": new ResourceListModel("layer"),
+  "environments": new ResourceListModel("environment"),
   "services": new ServiceListModel(),
   "users": new UserListModel(),
   "hosts": new ResourceListModel("host")

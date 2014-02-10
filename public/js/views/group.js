@@ -7,7 +7,7 @@ var Group = React.createClass({
         <RoleLink id={member.member} />
       </li>
     }.bind(this));
-    var resourceId = [ conjurConfiguration.account, 'group', this.props.data.group.identifier ].join(':')
+    var resourceId = [ conjurConfiguration.account, 'group', this.props.data.group.id ].join(':')
     return (
       <div className="group">
         <h2>Group {this.props.data.group.identifier}</h2>
