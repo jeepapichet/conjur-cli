@@ -7,7 +7,7 @@ var GenericListItem = React.createClass({
       <tr>
         <td className="id">
           <a href={groupUrl}>
-            {this.props.data.record.id}
+            {this.props.data.record.identifier}
           </a>
         </td>
         <td className="ownerId">

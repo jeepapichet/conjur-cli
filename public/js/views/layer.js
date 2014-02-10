@@ -12,7 +12,7 @@ var Layer = React.createClass({
       }
     }
     
-    var layerId = conjurConfiguration.account + ':layer:' +  this.props.data.layer.id;
+    var layerId = conjurConfiguration.account + ':layer:' +  this.props.data.layer.identifier;
     
     var hosts = this.props.data.layer.hosts.map(function (host) {
       return <li>
@@ -28,7 +28,7 @@ var Layer = React.createClass({
     
     return (
       <div className="group">
-        <h2>Layer {this.props.data.layer.id}</h2>
+        <h2>Layer {this.props.data.layer.identifier}</h2>
         
         <dl>
           <dt>Owner</dt>

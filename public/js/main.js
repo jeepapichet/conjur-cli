@@ -7,8 +7,8 @@ var lists = {
   "groups": new ListModel("groups"),
   "layers": new ListModel("layers"),
   "environments": new ListModel("environments"),
-  "services": new ResourceListModel("service"),
-  "users": new ResourceListModel("user"),
+  "services": new ServiceListModel(),
+  "users": new UserListModel(),
   "hosts": new ResourceListModel("host")
 };
 var conjurConfiguration;
@@ -122,7 +122,7 @@ $(document).ready(function() {
     users: function() {
       kind = "users";
       activateList(function(list) {
-        return <UserBox />;
+        return <UserBox data={{namespaces: list.namespaces}} />;
       });
     },
   

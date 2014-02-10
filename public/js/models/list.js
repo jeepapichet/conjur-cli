@@ -13,11 +13,11 @@ var ListModel = function(kind){
     }
     else {
       result = this._members.filter(function (o) {
-        return o.id.split('/')[0] === namespace;
+        return o.identifier.split('/')[0] === namespace;
       });
     }
     return result.sort(function(a,b) {
-      return a.id.localeCompare(b.id);
+      return a.identifier.localeCompare(b.identifier);
     });
   }
   
@@ -30,6 +30,9 @@ var ListModel = function(kind){
       url: "/api/" + kind,
       success: function(data) {
         self._members = data;
+        self._members.forEach(function(member) {
+          member.identifier = member.id;
+        }.bind(this));
         self.namespaces = _.unique(self._members.map(function (o) {
           return o.id.split('/')[0];
         })).sort();

@@ -1,9 +1,21 @@
 if (typeof $ === "undefined") { throw new Error("jQuery is required") }
 
-var ResourceListModel = function(kind){
+var ResourceListModel = function(kind, options){
   var List = function() {
     this._members = null;
     this.namespaces = null;
+    this.options = options || {};
+    if ( !this.options.idSelector ) {
+      this.options.idSelector = function(member) {
+        var idTokens = member.id.split(':');
+        return idTokens[idTokens.length-1];
+      }
+    }
+    if ( !this.options.namespaceSelector ) {
+      this.options.namespaceSelector = function(member) {
+        return member.identifier.split('/')[0];
+      }
+    }
   }
   
   List.prototype.members = function(namespace) {
@@ -13,11 +25,11 @@ var ResourceListModel = function(kind){
     }
     else {
       result = this._members.filter(function (o) {
-        return o.id.split('/')[0] === namespace;
-      });
+        return this.options.namespaceSelector(o) === namespace;
+      }.bind(this));
     }
     return result.sort(function(a,b) {
-      return a.id.localeCompare(b.id);
+      return a.identifier.localeCompare(b.identifier);
     });
   }
   
@@ -29,16 +41,19 @@ var ResourceListModel = function(kind){
     $.ajax({
       url: "/api/authz/" + encodeURIComponent(conjurConfiguration.account) + "/resources/" + encodeURIComponent(kind),
       success: function(data) {
+        var filter, idSelector;
+        
+        if ( filter = this.options.filter ) {
+          data = _.filter(data, filter);
+        }
+        
         self._members = data;
         self._members.forEach(function(member) {
-          var idTokens = member.id.split(':');
-          member.id = idTokens[idTokens.length-1];
-        });
-        self.namespaces = _.unique(self._members.map(function (o) {
-          return o.id.split('/')[0];
-        })).sort();
+          member.identifier = this.options.idSelector(member);
+        }.bind(this));
+        self.namespaces = _.unique(self._members.map(this.options.namespaceSelector)).sort();
         callback(self);
-      }
+      }.bind(this)
     });
   }
   
