@@ -69,6 +69,7 @@ $(document).ready(function() {
   function activateList(componentFunction) {
     /* console.log("List", kind); */
     setActiveNav(kind);
+    namespace.currentNamespace = "";
     lists[kind].fetch(function(list) {
       var component = componentFunction(list);
       components[kind] = component;
