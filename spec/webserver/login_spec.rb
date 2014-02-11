@@ -5,6 +5,10 @@ include Conjur::WebServer
 describe Login do
   let(:sessionid) { "the-session-id" }
   let(:login) { Login.new(sessionid) }
+  let(:credentials){ %w(username password) }
+  before do
+    Conjur::Authn.stub(:get_credentials).and_return credentials
+  end
   
   describe "#call" do
     let(:env) {
