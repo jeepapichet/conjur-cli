@@ -1,9 +1,10 @@
 require 'eventmachine'
-
+require 'conjur/audit/humanizer'
 
 module Conjur
   module WebServer
     class AuditStream
+      include Conjur::Audit::Humanizer
       class Body
         include EM::Deferrable
         def write chunk
@@ -63,7 +64,7 @@ module Conjur
         else
           [:"audit_#{kind}", id, options]
         end
-        api.send *args
+        api.send(*args).each{|e| humanize(e)}
       end
       
       def write_events body, events
