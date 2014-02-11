@@ -20,17 +20,10 @@ var AuditBox = React.createClass({
   },
 
   componentWillMount: function () {
-    var events = new AuditStream();
-    var eventList = new AuditEventList();
-    var self = this;
-
-    events.on('message', function (e) {
-      eventList.push(JSON.parse(e.data));
-    });
-
-    eventList.on('change', function () {
-      self.setState({events: eventList.events});
-    });
+    var events = this.events = new AuditStream();
+    var eventList = new AuditEventList().connect(events).on('change', function () {
+      this.setState({events: eventList.events});
+    }.bind(this));
 
 
     this.events = events;
@@ -43,23 +36,10 @@ var AuditBox = React.createClass({
     this.events.removeAll();
   },
 
-  toggleActive: function () {
-    if (this.state.active) {
-      this.events.removeAll();
-    } else {
-      this.addStreams();
-    }
-    this.setState({active: !this.state.active});
-  },
-
   addStreams: function () {
     var events = this.events;
     (this.props.roles || []).forEach(events.addRole.bind(events));
     (this.props.resources || []).forEach(events.addResource.bind(events));
-  },
-
-  showOptions: function () {
-
   },
 
   title: function () {
@@ -82,22 +62,17 @@ var AuditBox = React.createClass({
     var events = this.state.events.map(function (e) {
       return <AuditEvent data={e}/>;
     });
-    var playClasses = React.addons.classSet({
-      'glyphicon': true,
-      'glyphicon-play': !this.state.active,
-      'glyphicon-pause': this.state.active
-    });
+    
     return (
       <div className="panel panel-default">
         <div className="panel-heading">
           <strong>{this.title()}</strong>
-          <div className="pull-right">
-            <span className="glyphicon glyphicon-cog" onClick={this.showOptions}/>
-            <span onclick={this.toggleActive} className={playClasses}/>
-          </div>
         </div>
         <div className="auditBox">
-          {events}
+          <table className="table table-hover">
+            <thead><tr><th className="when">When</th><th>What</th></tr></thead>
+            <tbody> { events } </tbody>
+          </table>
         </div>
       </div>
       );
@@ -106,8 +81,7 @@ var AuditBox = React.createClass({
 
 var AuditDetails = React.createClass({
   componentDidMount: function () {
-    var $dom = $(this.getDOMNode());
-    $dom.modal('show').on('hidden.bs.modal', function () {
+    $(this.getDOMNode()).modal('show').on('hidden.bs.modal', function () {
       React.unmountComponentAtNode(document.getElementById('modal'));
     });
   },
@@ -118,8 +92,8 @@ var AuditDetails = React.createClass({
 
   render: function () {
     var html = {__html: '&times'}; // having this 'inline' makes my editor barf - jjm
-    return ( <div className="modal fade">
-      <div className="modal-dialog">
+    return ( <div className="modal fade bs-modal-lg">
+      <div className="modal-dialog modal-lg">
         <div className="modal-content">
           <div className="modal-header">
             <button type="button" className="close" data-dismiss="modal" aria-hidden="true"
@@ -138,7 +112,7 @@ var AuditDetails = React.createClass({
 
 AuditDetails.display = function (event) {
   React.renderComponent(
-    <AuditDetails data={event} open={true}/>,
+    <AuditDetails data={event}/>,
     document.getElementById('modal')
   );
 };
@@ -146,17 +120,21 @@ AuditDetails.display = function (event) {
 var AuditDetailTitle = React.createClass({
   render: function () {
     return (<h4 className="modal-title">
-      <Timestamp className="audit-timestamp" timestamp={this.props.data.timestamp}/>
-      <span className="audit-title"> { this.props.data.human } </span>
+      Event Details
     </h4>);
   }
 });
 
 var AuditDetailBody = React.createClass({
   render: function () {
-    var e = this.props.data;
+    var e = _.clone(this.props.data);
+    e.description = e.human;
+    delete e.human;
+    ['roles', 'resources', 'request_params'].forEach(function(k){
+      e[k] = JSON.stringify(e[k]);
+    });
     var children = _.flatten(
-      _.keys(e).map(function (k) {
+      _.keys(e).sort().map(function (k) {
         return [ <dt>{k}</dt>, <dd>{e[k]}</dd>, <br/> ];
       }));
     return <dl className="propertyList">{children}</dl>;
@@ -170,85 +148,23 @@ var Timestamp = React.createClass({
     var date = new Date(this.props.timestamp * MILLIS_IN_SECOND);
 
     return this.transferPropsTo(
-      <time datetime={date.toISOString()} title={date.toString()}>{date.toRelativeTime()}</time>
+      <time dateTime={date.toISOString()} title={date.toString()}>{date.toRelativeTime()}</time>
     );
   }
 });
 
 var AuditEvent = React.createClass({
-  getInitialState: function () {
-    return { detailed: false };
-  },
-
-  render: function () {
-    if (this.state.detailed) {
-      return this.renderDetailed();
-    } else {
-      return this.renderCompact();
-    }
-  },
-
-  titleText: function () {
-    var event = this.props.data;
-    var text = event.action + " on ";
-    var asset = event.asset;
-
-    var id = asset == 'role' ? _.find(event.roles, function (r) {
-      return r != event.conjur_role;
-    }) : event.resources[0];
-    return text + asset + " " + id;
-  },
-
-  renderDetailed: function () {
-    return <div className="panel panel-info auditEvent">
-      <div className="panel-heading">
-        <strong className="panel-title">{this.titleText()}</strong>
-        {this.toggleLink()}
-      </div>
-      <div className="panelBody">
-        {this.detailText()}
-      </div>
-    </div>;
-  },
-
-  detailText: function () {
-    var e = this.props.data;
-    var children = _.flatten(
-      _.keys(e).map(function (k) {
-        return [ <dt>{k}</dt>, <dd>{e[k]}</dd>, <br/> ];
-      }));
-    return <dl className="propertyList">{children}</dl>;
-  },
-
-
-  renderCompact: function () {
-    return <div className="auditEvent alert alert-info">
-      <strong>{this.titleText()}</strong>
-      {this.toggleLink()}
-      <Timestamp timestamp={this.props.data.timestamp} />
-    </div>;
-  },
-
-  toggleLink: function () {
-    return <ToggleLink onChange={this.toggleDetail} data={this.state.detailed}/>
-  },
-
-  toggleDetail: function () {
-    this.setState({detailed: !this.state.detailed});
+   render: function(){
+     return (<tr onClick={this.handleClick}>
+       <td> <Timestamp timestamp={this.props.data.timestamp}/> </td>
+       <td> { this.props.data.human } </td>
+     </tr>);
+   },
+  handleClick: function(){
+    AuditDetails.display(this.props.data);
   }
 });
 
-var ToggleLink = React.createClass({
-  render: function () {
-    var up = this.props.data;
-    var classes = React.addons.classSet({
-      'glyphicon': true, 'pull-right': true,
-      'glyphicon-collapse-up': up,
-      'glyphicon-collapse-down': !up
-    });
-    return <span className={classes} onClick={this.props.onChange}/>
-  }
-});
 
 var GlobalAudit = React.createClass({
   componentWillMount: function () {

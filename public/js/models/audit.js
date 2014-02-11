@@ -107,4 +107,18 @@ AuditEventList.prototype.clear = function(){
   this.trigger('change');
 }
 
+AuditEventList.prototype.connect = function(stream){
+  stream.on('message', this._onMessage.bind(this));
+  return this;
+};
+
+AuditEventList.prototype.disconnect = function(stream){
+  stream.off('message', this._onMessage);
+  return this;
+};
+
+AuditEventList.prototype._onMessage = function(e){
+  this.push(JSON.parse(e.data));
+};
+
 window.AuditEventList = AuditEventList;
