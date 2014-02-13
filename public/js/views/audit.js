@@ -241,7 +241,22 @@ var GlobalAudit = React.createClass({
         <strong>All Audit Events</strong>
       </div>
       <div className="auditBox">
-         {events}
+        <table className="table table-hover">
+          <thead>
+            <tr>
+              <th>Actor</th>
+              <th>Action</th>
+              <th>Object</th>
+              <th>Privilege</th>
+              <th>Recipient</th>
+              <th>Result</th>
+              <th>Timestamp</th>
+            </tr>
+          </thead>
+          <tbody> 
+            { events } 
+          </tbody>
+        </table>
       </div>
     </div>
   }
