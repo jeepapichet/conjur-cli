@@ -28,7 +28,7 @@ GlobalList.prototype.members = function(callback){
     this._fetch(function(result){
       this._fetching = false;
       this._members = _.uniq(result);
-      console.log('set members to ', this._members);
+      // console.log('set members to ', this._members);
       this._callbacks.forEach(function(cb){
         cb.call(null, this._members);
       }.bind(this));

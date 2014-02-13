@@ -1,10 +1,13 @@
 require 'eventmachine'
 require 'conjur/audit/humanizer'
+require 'conjur/audit/tableizer'
 
 module Conjur
   module WebServer
     class AuditStream
       include Conjur::Audit::Humanizer
+      include Conjur::Audit::Tableizer
+      
       class Body
         include EM::Deferrable
         def write chunk
@@ -64,7 +67,7 @@ module Conjur
         else
           [:"audit_#{kind}", id, options]
         end
-        format = CGI.parse(env['QUERY_STRING'] || '')['format']
+        format = Rack::Request.new(env).params['format'] || 'string'
         format_method = case format
         when 'table'
           :tableize

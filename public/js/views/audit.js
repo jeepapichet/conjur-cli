@@ -18,9 +18,9 @@ var AuditBox = React.createClass({
       events: []
     };
   },
-
+  
   componentWillMount: function () {
-    var events = this.events = new AuditStream();
+    var events = this.events = new AuditStream(this.auditStreamOptions());
     var eventList = new AuditEventList().connect(events).on('change', function () {
       this.setState({events: eventList.events});
     }.bind(this));
@@ -45,7 +45,7 @@ var AuditBox = React.createClass({
   title: function () {
     var resources = this.props.resources || [];
     var roles = this.props.roles || [];
-    console.log(resources, roles);
+    // console.log(resources, roles);
     var title = "Auditing ";
     if (resources.length) {
       title += "resource" + (resources.length == 1 ? '' : 's') + " " + humanizeArray(resources) + " ";
@@ -56,6 +56,10 @@ var AuditBox = React.createClass({
     }
 
     return title;
+  },
+
+  auditStreamOptions: function() {
+    return { format: 'table' };
   },
 
   render: function () {
@@ -70,8 +74,20 @@ var AuditBox = React.createClass({
         </div>
         <div className="auditBox">
           <table className="table table-hover">
-            <thead><tr><th className="when">When</th><th>What</th></tr></thead>
-            <tbody> { events } </tbody>
+            <thead>
+              <tr>
+                <th>Actor</th>
+                <th>Action</th>
+                <th>Object</th>
+                <th>Privilege</th>
+                <th>Recipient</th>
+                <th>Result</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody> 
+              { events } 
+            </tbody>
           </table>
         </div>
       </div>
@@ -154,12 +170,32 @@ var Timestamp = React.createClass({
 });
 
 var AuditEvent = React.createClass({
-   render: function(){
-     return (<tr onClick={this.handleClick}>
-       <td> <Timestamp timestamp={this.props.data.timestamp}/> </td>
-       <td> { this.props.data.human } </td>
-     </tr>);
-   },
+  render: function(){
+    var recipient = this.props.data.table.grantee || this.props.data.table.member;
+    if ( recipient )
+      recipient = <RoleLink id={recipient} />
+
+    var object = this.props.data.table.object;
+    if ( this.props.data.table.object_kind === 'role' ) {
+      object = <RoleLink id={this.props.data.table.object} />
+    }
+    else {
+      var tokens = this.props.data.table.object.split(':')
+      object = [ tokens[1], tokens.slice(2, tokens.length).join(':') ].join(' ');
+    }
+    
+    return (
+      <tr onClick={this.handleClick}>
+        <td><RoleLink id={this.props.data.table.actor} /></td>
+        <td>{this.props.data.table.action}</td>
+        <td>{ object }</td>
+        <td>{this.props.data.table.privilege}</td>
+        <td>{ recipient }</td>
+        <td>{this.props.data.result}</td>
+        <td><Timestamp timestamp={this.props.data.timestamp}/></td>
+      </tr>
+    );
+  },
   handleClick: function(){
     AuditDetails.display(this.props.data);
   }
@@ -168,7 +204,7 @@ var AuditEvent = React.createClass({
 
 var GlobalAudit = React.createClass({
   componentWillMount: function () {
-    var stream = this.stream = new AuditStream();
+    var stream = this.stream = new AuditStream({format: 'table'});
     var events = this.events = new AuditEventList();
 
     stream.on('message', function (e) {

@@ -3,7 +3,10 @@
  * 
  * @constructor
  */
-var AuditStream = function(){
+var AuditStream = function(options){
+  if ( !options )
+    options = {};
+    
   var sources = {},
       self    = this;
   
@@ -31,6 +34,8 @@ var AuditStream = function(){
     var url = "/api/audit/stream/" + kind;
     if(id) url += "/" + id;
     url += "?self=true";
+    if(options.format === 'table')
+      url += '&format=table';
     return url;
   }
   
