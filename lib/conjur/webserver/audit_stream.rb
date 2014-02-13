@@ -64,7 +64,14 @@ module Conjur
         else
           [:"audit_#{kind}", id, options]
         end
-        api.send(*args).each{|e| humanize(e)}
+        format = CGI.parse(env['QUERY_STRING'] || '')['format']
+        format_method = case format
+        when 'table'
+          :tableize
+        else
+          :humanize
+        end
+        api.send(*args).each {|e| send(format_method, e)}
       end
       
       def write_events body, events
