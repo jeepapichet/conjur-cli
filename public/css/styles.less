@@ -107,6 +107,13 @@ th, td {
   background-position: (-0.2 * @size + @x-offset) (-0.1 * @size + @y-offset), (0.2 * @size + @x-offset) (0.1 * @size + @y-offset);
 }
 
+.environment-icon(@size, @x-offset: 0.2em, @y-offset: 0.07em) {
+  background-image: url('/images/icon-key.svg'), url('/images/icon-key.svg');
+  background-repeat: no-repeat;
+  background-size: @size;
+  background-position: (-0.2 * @size + @x-offset) (-0.1 * @size + @y-offset), (0.2 * @size + @x-offset) (0.1 * @size + @y-offset);
+}
+
 .group h2, .groupsList tbody tr td.id {
   .group-icon(2em);
   padding-left: 2.5em;
@@ -172,12 +179,24 @@ dl.propertyList {
   padding-left: 1.7em;
 }
 
-.role-link-icon(@icon) {
+.role-link-icon(@icon, @size: 1.6em) {
   .role-link-padding;
 
   background-image: url(@icon);
-  background-size: 1.6em;
+  background-size: @size;
   background-repeat: no-repeat;
+}
+
+.variable.resource-link {
+  .role-link-icon('/images/icon-variable.png', 0.8em);
+}
+
+.environment.resource-link {
+  .role-link-icon('/images/icon-environment.png', 1.1em);
+}
+
+.environment-variables.resource-link {
+  .role-link-icon('/images/icon-environment.png', 1.1em);
 }
 
 .host.role-link {

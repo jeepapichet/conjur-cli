@@ -1,5 +1,8 @@
 /** @jsx React.DOM */
-
+  
+/** render a link to the role represented by this.props.id
+   Example: <RoleLink id="ci:user:jon"/>
+*/
 var RoleLink = React.createClass({
   render: function() {
     var tokens = this.props.id.split(":");

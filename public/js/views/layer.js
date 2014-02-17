@@ -52,8 +52,11 @@ var Layer = React.createClass({
               {hosts}
             </ul>
           </dd>
+          <dt>Permissions</dt>
+          <dd>
+            <Permissions role={layer.roleid}/>
+          </dd>  
         </dl>
-        
         <div className="audit auditLayer">
           <AuditBox roles={[layer.roleid]} resources={[layer.resource_identifier]}/>
         </div>
