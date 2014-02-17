@@ -12,11 +12,13 @@ module Conjur
       
       def initialize(script, filename = nil)
         @context = {
-          "env" => Conjur.env,
-          "stack" => Conjur.stack,
-          "account" => Conjur.account,
+          "conjur" => {
+            "stack" => Conjur.stack,
+            "account" => Conjur.account,
+          },
           "api_keys" => {}
         }
+        @context["conjur"]["env"] = Conjur.env unless Conjur.env == "production"
         @script = script
         @filename = filename
         @api = nil
@@ -57,6 +59,21 @@ module Conjur
         else
           current_scope
         end
+      end
+      
+      def policy name, options = {}, &block
+        role_options = {}
+        role_options[:acting_as] = api.role(options[:owner]) if options[:owner]
+        policy = role "policy", name, role_options
+        context["policy"] = policy.roleid
+        do_scope name do
+          do_object policy do
+            owns do
+              block.call
+            end
+          end
+        end
+        context
       end
       
       def namespace ns = nil, &block

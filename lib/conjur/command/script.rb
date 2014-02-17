@@ -51,14 +51,14 @@ class Conjur::Command::Authn < Conjur::Command
         end
       end
       
-      result = runner.execute
+      runner.execute
       
       if options[:context]
         File.write(options[:context], JSON.pretty_generate(runner.context))
         File.chmod(0600, options[:context])
       end
 
-      puts JSON.pretty_generate(result)
+      puts JSON.pretty_generate(runner.context)
     end
   end
 end
