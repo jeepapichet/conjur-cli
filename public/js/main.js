@@ -111,9 +111,11 @@ $(document).ready(function() {
   var Workspace = Backbone.Router.extend({
     routes: {
       "ui/users": "users",
+      "ui/users/:user": "user",
       "ui/groups": "groups",
       "ui/groups/:group": "group",
       "ui/hosts": "hosts",
+      "ui/hosts/:host": "host",
       "ui/layers": "layers",
       "ui/layers/:layer": "layer",
       "ui/services": "services",
@@ -123,6 +125,14 @@ $(document).ready(function() {
       "ui/audit": "audit"
     },
   
+    user: function(user){
+      kind = "users";
+      activateRecord(user, function(record, callback){
+        return <User data={record}/>;
+      });
+    },
+  
+    
     users: function() {
       kind = "users";
       activateList(function(list) {
@@ -148,6 +158,11 @@ $(document).ready(function() {
       activateList(function(list) {
         return <GroupBox data={{namespaces: list.namespaces}} />;
       });
+    },
+    
+    host: function(host){
+      kind = "hosts";
+      activateRecord(host, function(record){ return <Host data={record}/>;});
     },
 
     hosts: function() {

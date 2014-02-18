@@ -8,8 +8,7 @@ var Group = React.createClass({
       </li>
     }.bind(this));
     var resourceId = [ conjurConfiguration.account, 'group', this.props.data.group.id ].join(':')
-    var group = this.props.data.group;
-    console.log("group=", group);
+    var group = this.props.data.group; 
     return (
       <div className="group">
         <h2>Group {this.props.data.group.identifier}</h2>
