@@ -39,8 +39,10 @@ var Permissions = React.createClass({
           <td rowSpan={rowspan}>{ kind }</td>
         </tr>
       );
+      
+      // the table looks kinda derpy if it doesn't have any permission rows
       if(rowspan == 1){
-        rows.push(<td colSpan="3"> No Permissions </td>);
+        rows.push(<tr><td colSpan="3"> No Permissions </td></tr>);
       }else{
         rows.push(r.permissions.map(function(p){
           return <PermissionRow data={p}/>
