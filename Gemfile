@@ -6,8 +6,8 @@ gemspec
 gem 'conjur-api', git: 'https://github.com/inscitiv/api-ruby.git', branch: 'master'
 
 gem 'thin'
-gem 'eventmachine'
-gem 'em-net-http'
+gem 'eventmachine', github: 'eventmachine/eventmachine', branch: 'master'
+
 
 group :test, :development do
   gem 'pry'
