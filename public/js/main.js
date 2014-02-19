@@ -16,6 +16,9 @@ var conjurConfiguration;
 var components  = {};
 var router;
 var globalIds;
+var endpoints;
+
+
 
 function updateNamespace(ns) {
   namespace.currentNamespace = ns;
@@ -39,6 +42,31 @@ $(document).ready(function() {
   }
   
   conjurConfiguration = JSON.parse(decodeURIComponent(readCookie('conjur_configuration')).replace(/\+/g, ' '));
+  
+  function createEndpoints(){
+    endpoints = {};
+    function genericEndpoint(path){
+      return function(){
+        var i= 0, length = arguments.length;
+        var localPath = [].concat(path); // clone it
+        for(; i < length && _.isString(arguments[i]); i++){
+          localPath.push(arguments[i]);
+        }
+        var pathString = _.flatten(localPath.map(function(p){
+          return p.split('/').map(encodeURIComponent)
+        })).join("/");
+        if(i < length){
+          pathString += '?' + jQuery.param(arguments[i]);
+        }
+        if(pathString.charAt(0) != '/') pathString = '/' + pathString;
+        return pathString;
+      }
+    }
+    endpoints.authz = genericEndpoint(['api/authz', conjurConfiguration.account]);
+    endpoints.core  = genericEndpoint('api');
+  }
+  
+  createEndpoints();
   
   globalIds = new GlobalIds();
   
@@ -122,7 +150,8 @@ $(document).ready(function() {
       "ui/variables": "variables",
       "ui/variables/:variable": "variable",
       "ui/environments": "environments",
-      "ui/audit": "audit"
+      "ui/audit": "audit",
+      "ui/search/:search": "search"
     },
   
     user: function(user){
@@ -249,9 +278,18 @@ $(document).ready(function() {
         <GlobalAudit/>,
         document.getElementById('content')
       );
+    },
+    
+    search: function(search){
+      SearchResults.search(search);
     }
   });
   
   router = new Workspace();
   Backbone.history.start({pushState: true});
+  
+  React.renderComponent(
+    <SearchForm />,
+    document.getElementById("inlineSearchContainer")
+  );
 });
