@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+# interactively build conjur variable creation command
+# copyright 2015 Ryan Prior all rights reserved
+
+# prompt for ID
+read -e -p "ID: " id
+
+# prompt for group
+read -e -p "group: " group
+
+# prompt for kind
+read -e -p "kind: " kind
+
+# prompt for mime-type
+read -e -p "mime-type: " mimetype
+
+# prompt for annotations
+echo "annotation:"
+while IFS= read -re line; do
+    annotation=$(printf '%s\n%s' "$annotation" "$line")
+done
+
+# prompt for value
+echo "value:"
+while IFS= read -re line; do
+    value=$(printf '%s\n%s' "$value" "$line")
+done
+
+# prompt to confirm
+printf 'conjur variable create\
+  --annotate\
+  --kind=%s\
+  --mime-type=%s\
+  --value=%s
+%s
+' "$kind" "$mimetype" "$value" "$annotation"
+echo "correct?"
