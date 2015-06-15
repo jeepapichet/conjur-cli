@@ -10,4 +10,5 @@ gem 'conjur-api', git: 'https://github.com/conjurinc/api-ruby.git', branch: 'mas
 group :test, :development do
   gem 'pry'
   gem 'ruby-prof'
+  gem 'dotenv'
 end
