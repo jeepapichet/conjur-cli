@@ -67,6 +67,8 @@ echo "value:"
 while IFS= read -re line; do
     printf -v value $'%s%s\n' "$value" "$line"
 done
+# strip trailing newline
+value="${value::-1}"
 
 # prompt to confirm
 if [ "$group" ]; then printf -v group $'\n  --as-group="%s" \\' "$group"; fi
