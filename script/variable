@@ -3,29 +3,26 @@
 # interactively build conjur variable creation command
 # copyright 2015 Ryan Prior all rights reserved
 
-#readi () {
-#    printf "\n%s\nExample: %s\n" "$1" "$2"
-#    if [-z "$3" ]; then echo "This field is required."; fi
-
 req () { echo "This field is required."; }
+info_fmt="\n%s\nExample: %s\n"
 
-echo $_cj_variable_create_desc
-echo $_cj_variable_desc
+echo "$_cj_variable_create_desc"
+echo "$_cj_variable_desc"
 
-printf "\n%s\nExample: %s\n" "$_cj_id_desc" "$_cj_id_example"
+printf "$info_fmt" "$_cj_id_desc" "$_cj_id_example"
 if ! [ -v _cj_id_default ]; then req; fi
 # prompt for ID
 read -e -p "ID: " id
 # set default
-if [ -v _cj_id_default ] && [ -z $id ]; then
-    id=$_cj_id_default
+if [ -v _cj_id_default ] && [ -z "$id" ]; then
+    id="$_cj_id_default"
 fi
 
-printf "\n%s\nExample: %s\n" "$_cj_group_desc" "$_cj_group_example"
+printf "$info_fmt" "$_cj_group_desc" "$_cj_group_example"
 if ! [ -v _cj_group_default ]; then
     req
 else
-    if [ -z $_cj_group_default ]; then
+    if [ -z "$_cj_group_default" ]; then
 	group_prompt_default=" (default none)"
     else
 	printf -v group_prompt_default " (default %s)" "$_cj_group_default"
@@ -34,20 +31,20 @@ fi
 # prompt for group
 read -e -p "group:$group_prompt_default " group
 # set default
-if [ -v _cj_group_default ] && [ -z $group ]; then
-    group=$_cj_group_default
+if [ -v _cj_group_default ] && [ -z "$group" ]; then
+    group="$_cj_group_default"
 fi
 
-printf "\n%s\nExample: %s\n" "$_cj_kind_desc" "$_cj_kind_example"
+printf "$info_fmt" "$_cj_kind_desc" "$_cj_kind_example"
 if ! [ -v _cj_kind_default ]; then req; fi
 # prompt for kind
 read -e -p "kind: (default $_cj_kind_default) " kind
 # set default
-if [ -v _cj_kind_default ] && [ -z $kind ]; then
-    kind=$_cj_kind_default
+if [ -v _cj_kind_default ] && [ -z "$kind" ]; then
+    kind="$_cj_kind_default"
 fi
 
-printf "\n%s\nExample: %s\n" "$_cj_mimetype_desc" "$_cj_mimetype_example"
+printf "$info_fmt" "$_cj_mimetype_desc" "$_cj_mimetype_example"
 # prompt for mime-type
 echo "Choose or enter a mime-type"
 select mimetype in "text/plain" \
@@ -56,7 +53,7 @@ select mimetype in "text/plain" \
                    "application/x-yaml" \
                    "application/x-pem-file" \
                    "other"; do
-    case $mimetype in
+    case "$mimetype" in
 	other ) read -e -p "mime-type: " mimetype; break;;
 	* ) break;;
     esac
@@ -64,21 +61,20 @@ done
 
 # TODO allow prompt for interactive annotations
 
-printf "\n%s\nExample: %s\nSend EOF (ctrl+d) when finished\n" "$_cj_value_desc" $"_cj_value_example"
+printf "${info_fmt}Send EOF (ctrl+d) when finished\n" "$_cj_value_desc" $"_cj_value_example"
 # prompt for value
 echo "value:"
 while IFS= read -re line; do
-    value=$(printf '%s\n%s' "$value" "$line")
+    printf -v value $'%s%s\n' "$value" "$line"
 done
 
 # prompt to confirm
-echo "group $group kind $kind type $mimetype value $value id $id"
-if [ "$group" ]; then printf -v group $'\n  --as-group="%s"\\' "$group"; fi
-if [ "$value" ]; then printf -v value $'\n  --value="%s"\\' "$value"; fi
-printf -v command 'conjur variable create\%s
-  --kind="%s"\
-  --mime-type="%s"\%s
-  "%s"' "$group" "$kind" "$mimetype" "$value" "$id"
+if [ "$group" ]; then printf -v group $'\n  --as-group="%s" \\' "$group"; fi
+if [ "$value" ]; then printf -v value $'\n  --value="%s" \\' "$value"; fi
+printf -v command '%s variable create \%s
+  --kind="%s" \
+  --mime-type="%s" \%s
+  "%s"' "$CONJUR_CMD" "$group" "$kind" "$mimetype" "$value" "$id"
 
 printf '
 CONFIRMATION
@@ -89,8 +85,8 @@ CONFIRMATION
 
 while true; do
     read -e -p "Run command now? (Y/N) " correct
-    case $correct in
-        [Yy]* ) eval $command; break;;
+    case "$correct" in
+        [Yy]* ) eval "$command"; break;;
         [Nn]* ) echo "quit"; exit 1;;
         *     ) echo "Enter Y or N";;
     esac
