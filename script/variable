@@ -61,7 +61,7 @@ done
 
 # TODO allow prompt for interactive annotations
 
-printf "${info_fmt}Send EOF (ctrl+d) when finished\n" "$_cj_value_desc" $"_cj_value_example"
+printf "${info_fmt}Send EOF (ctrl+d) when finished\n" "$_cj_value_desc" "$_cj_value_example"
 # prompt for value
 echo "value:"
 while IFS= read -re line; do
