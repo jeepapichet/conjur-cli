@@ -3,46 +3,45 @@
 # interactively build conjur variable creation command
 # copyright 2015 Ryan Prior all rights reserved
 
-req () { echo "This field is required."; }
+req () { # `req DEFAULT` notifies in case of required field
+    if ! [ -v $1 ]; then
+        echo "This field is required.";
+    fi
+}
+
+default () { # `default DEFAULT VAR` sets VAR to DEFAULT as appropriate
+    if [ -v $1 ] && [ -z "${!2}" ]; then
+        printf -v $2 "${!1}";
+    fi
+}
+
 info_fmt="\n%s\nExample: %s\n"
+
+readi () {
+    local desc
+    local example
+    local def
+    local def_prompt
+    printf -v desc '_cj_%s_desc' "$1"
+    printf -v example '_cj_%s_example' "$1"
+    printf -v def '_cj_%s_default' "$1"
+    if [ -v $def ]; then
+        local def_fix="${!def}"
+        if [ -z "$def_fix" ]; then def_fix="none"; fi
+        printf -v def_prompt '(default %s) ' "${def_fix}"
+    fi
+    printf "$info_fmt" "${!desc}" "${!example}"
+    req $def
+    read -e -p "$1: ${def_prompt}" $1
+    default $def $1
+}
 
 echo "$_cj_variable_create_desc"
 echo "$_cj_variable_desc"
 
-printf "$info_fmt" "$_cj_id_desc" "$_cj_id_example"
-if ! [ -v _cj_id_default ]; then req; fi
-# prompt for ID
-read -e -p "ID: " id
-# set default
-if [ -v _cj_id_default ] && [ -z "$id" ]; then
-    id="$_cj_id_default"
-fi
-
-printf "$info_fmt" "$_cj_group_desc" "$_cj_group_example"
-if ! [ -v _cj_group_default ]; then
-    req
-else
-    if [ -z "$_cj_group_default" ]; then
-	group_prompt_default=" (default none)"
-    else
-	printf -v group_prompt_default " (default %s)" "$_cj_group_default"
-    fi
-fi
-# prompt for group
-read -e -p "group:$group_prompt_default " group
-# set default
-if [ -v _cj_group_default ] && [ -z "$group" ]; then
-    group="$_cj_group_default"
-fi
-
-printf "$info_fmt" "$_cj_kind_desc" "$_cj_kind_example"
-if ! [ -v _cj_kind_default ]; then req; fi
-# prompt for kind
-read -e -p "kind: (default $_cj_kind_default) " kind
-# set default
-if [ -v _cj_kind_default ] && [ -z "$kind" ]; then
-    kind="$_cj_kind_default"
-fi
+readi id
+readi group
+readi kind
 
 printf "$info_fmt" "$_cj_mimetype_desc" "$_cj_mimetype_example"
 # prompt for mime-type
