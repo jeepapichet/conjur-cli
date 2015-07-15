@@ -46,6 +46,14 @@ shared_context "fresh config" do
   }
 end
 
+shared_context "dsl", dsl2: true do
+  require 'conjur/dsl2/context'
+  let(:api)      { double(:api) }
+  let(:filename) { nil }
+  let(:script)   { filename ? File.read(File.join('spec/dsl2', filename)) : double(:script) }
+  let(:context)  { Conjur::DSL2::Context.new(api, script, filename) }
+end
+
 RSpec::Core::DSL.change_global_dsl do
   def describe_conjurize *argv, &block
     describe *argv do

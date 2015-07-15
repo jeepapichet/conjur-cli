@@ -1,0 +1,31 @@
+create:
+  - !group developers
+  - !user
+    id: joe
+    annotations:
+      username: joe
+
+members:
+  grant:
+    -
+      role: !group developers
+      to: !user joe
+    - 
+      role: !group developers
+      to: !group ops
+  revoke:
+    -
+      role: !group security_admin
+      from: !user joe
+
+permissions:
+  permit:
+    -
+      role: !group developers
+      privilege: read
+      resource: !group developers
+
+    -
+      role: !group ops
+      privilege: [ read, update ]
+      resource: !group developers

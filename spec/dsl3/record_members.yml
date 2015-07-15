@@ -1,0 +1,9 @@
+- !group &developers developers
+
+- !user
+  id: alice
+  members: &foobar
+  - *developers
+  -
+    role: !group ops
+    admin: true
