@@ -7,8 +7,7 @@
 
 (defun conjur-get-completions (args index)
   (with-temp-buffer ;; omg hack
-    (let* ((default-directory "/home/ryan/dev/cli-ruby/")
-           (completion-line (mapconcat 'identity args " "))
+    (let* ((completion-line (mapconcat 'identity args " "))
            (completion-point (number-to-string (length completion-line)))
            (process-environment (append
                                  (cons (concat "COMP_LINE=" completion-line) nil)
