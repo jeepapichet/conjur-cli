@@ -136,8 +136,8 @@ class Conjur::Command::Groups < Conjur::Command
       members.desc "Lists all direct members of the group. The membership list is not recursively expanded."
       members.arg_name "GROUP"
       members.command :list do |c|
-        c.desc "Verbose output"
-        c.switch [:V,:verbose]
+        verbose_option c
+          
         c.action do |global_options,options,args|
           group = require_arg(args, 'GROUP')
           display_members api.group(group).role.members, options

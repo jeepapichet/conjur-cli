@@ -129,10 +129,12 @@ class Conjur::Command::Resources < Conjur::Command
     resource.desc "List roles with a specified permission on the resource"
     resource.arg_name "RESOURCE PERMISSION"
     resource.command :permitted_roles do |c|
+      verbose_option c
+      
       c.action do |global_options,options,args|
         id = full_resource_id( require_arg(args, "RESOURCE") )
         permission = require_arg(args, "PERMISSION")
-        display api.resource(id).permitted_roles(permission)
+        display_roles api.resource(id).permitted_roles(permission), options
       end
     end
 

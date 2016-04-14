@@ -29,7 +29,7 @@ class Conjur::Command::Roles < Conjur::Command
     role.desc "Create a new role"
     role.arg_name "ROLE"
     role.command :create do |c|
-      acting_as_option(c)
+      acting_as_option c
       
       c.desc "Output a JSON response with a single field, roleid"
       c.switch "json"
@@ -50,6 +50,22 @@ class Conjur::Command::Roles < Conjur::Command
         else
           puts "Created role #{role.roleid}"
         end
+      end
+    end
+
+    role.desc "Show a role"
+    role.arg_name "ROLE"
+    role.command :show do |c|
+      c.action do |global_options,options,args|
+        id = require_arg(args, 'ROLE')
+        
+        require 'conjur/role'
+        require 'conjur/has_attributes'
+        class Conjur::Role
+          include Conjur::HasAttributes
+        end
+
+        display api.role(id).attributes
       end
     end
 
@@ -93,8 +109,7 @@ class Conjur::Command::Roles < Conjur::Command
     role.desc "Lists all direct members of the role. The membership list is not recursively expanded."
     role.arg_name "ROLE"
     role.command :members do |c|
-      c.desc "Verbose output"
-      c.switch [:V,:verbose]
+      verbose_option c
 
       c.action do |global_options,options,args|
         role = args.shift || api.user(api.username).roleid

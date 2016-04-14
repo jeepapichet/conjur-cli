@@ -69,6 +69,11 @@ module Conjur
       def hide_docs(command)
         def command.nodoc; true end
       end
+      
+      def verbose_option c
+        c.desc "Verbose output"
+        c.switch [:V,:verbose]
+      end
 
       def acting_as_option command
         return if command.flags.member?(:"as-group") # avoid duplicate flags
@@ -310,6 +315,14 @@ an alternative destination role.)
           members.map(&:member).map(&:roleid)
         end
         display result
+      end
+
+      def display_roles(obj, options = {})
+        if options[:V]
+          display obj
+        else
+          display obj.map{|o| o['id']}
+        end
       end
 
       def display(obj, options = {})
