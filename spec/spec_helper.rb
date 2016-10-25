@@ -32,6 +32,21 @@ require 'conjur/cli'
 require 'conjur/api'
 require 'conjur/complete'
 
+# File activesupport/lib/active_support/core_ext/kernel/reporting.rb, line 44
+def silence_stream(stream)
+  old_stream = stream.dup
+  stream.reopen(RbConfig::CONFIG['host_os'] =~ /mswin|mingw/ ? 'NUL:' : '/dev/null')
+  stream.sync = true
+  yield
+ensure
+  stream.reopen(old_stream)
+end
+
+# File activesupport/lib/active_support/core_ext/kernel/reporting.rb, line 33
+def silence_stderr #:nodoc:
+  silence_stream(STDERR) { yield }
+end
+
 shared_context "fresh config" do
   before {
     ENV.delete_if do |k,v|
