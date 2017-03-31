@@ -1,3 +1,4 @@
+@possum-wip
 Feature: Retire a group
   Background:
     When I successfully run `conjur group create $ns/ops`

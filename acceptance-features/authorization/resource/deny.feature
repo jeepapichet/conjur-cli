@@ -3,8 +3,9 @@ Feature: Deny a privilege on a Resource
   Background:
     Given I successfully run `conjur resource create food:$ns/bacon`
 
+  # resource permit and resource deny are not implemented
+  @possum-wip
   Scenario: Once granted, privileges can be revoked
-  
     Given I create a new user named "alice@$ns"
     And I successfully run `conjur resource permit food:$ns/bacon user:alice@$ns fry`
     When I successfully run `conjur resource deny food:$ns/bacon user:alice@$ns fry`

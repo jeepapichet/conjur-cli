@@ -8,7 +8,9 @@ Feature: Create a group
       | resource_identifier |
       | roleid     |
     And the JSON response at "id" should include "/ops"
-    
+
+  # Role members includes the policy, does not include the admin user.
+  @possum-wip    
   Scenario: Add a user to the group and show the list of members
     Given I successfully run `conjur user create bob@$ns`
     And I successfully run `conjur group create $ns/ops`

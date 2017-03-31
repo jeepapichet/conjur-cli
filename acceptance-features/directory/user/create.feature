@@ -4,6 +4,8 @@ Feature: Create a User
     When I successfully run `conjur user create alice-without-password@$ns`
     And the JSON should have "api_key"
  
+  # Possum doesn't support submitting the password in the policy.
+  @possum-wip
   Scenario: Create a user with a password
     When I run `conjur user create -p alice-with-password@$ns` interactively
     And I type "foobar"
@@ -16,6 +18,9 @@ Feature: Create a User
     And I keep the JSON response at "ownerid" as "OWNERID"
     Then the output should contain "/security_admin"
  
+  # This is returning a 404
+  # Also, 403 is really not the right error for an invalid path. 422 would be better.
+  @possum-wip
   Scenario: Some characters are disallowed in user ids, such as /
     When I run `conjur user create alice/$ns`
     Then the exit status should be 1

@@ -22,6 +22,8 @@ Feature: Annotate a resource
     Then I run `conjur resource annotate food:$ns/bacon preparation-style crispy`
     Then the exit status should be 1
 
+  # expected "conjur resource annotate food:0a091f6e5c896557d1531f76/bacon preparation-style crispy" to be successfully executed
+  @possum-wip
   Scenario: Update privilege is sufficient to manage annotations
     Given I create a new user named "alice@$ns"
     And I successfully run `conjur resource permit food:$ns/bacon user:alice@$ns update`

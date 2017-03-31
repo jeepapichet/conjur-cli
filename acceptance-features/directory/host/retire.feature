@@ -1,3 +1,4 @@
+@possum-wip
 Feature: Retire a host
   Background:
     When I successfully run `conjur host create $ns/host`

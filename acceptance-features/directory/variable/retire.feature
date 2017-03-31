@@ -1,3 +1,4 @@
+@possum-wip
 Feature: Retire a variable
   Background:
     Given I successfully run `conjur variable create $ns/secret the-value` 

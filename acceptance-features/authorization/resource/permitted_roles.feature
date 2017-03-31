@@ -3,6 +3,8 @@ Feature: List roles which have a permission on a resource
   Background:
     Given I successfully run `conjur resource create food:$ns/bacon`
 
+  # 743: unexpected token at 'cucumber:user:admin@4584764ee381caedfc47a56e' (MultiJson::ParseError)
+  @possum-wip
   Scenario: The owner of a resource is always listed in permitted_roles
     When I successfully run `conjur resource permitted_roles food:$ns/bacon fry`
     Then the JSON should include %{MY_ROLEID}

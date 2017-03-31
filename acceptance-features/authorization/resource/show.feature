@@ -11,6 +11,8 @@ Feature: Show a resource
     And the JSON should have "permissions"
     And the JSON should have "annotations"
 
+  # No read privileges in possum
+  @possum-wip
   Scenario: You can't show a resource on which you have no privileges
     Given I login as a new user
     And I reset the command list
@@ -18,6 +20,8 @@ Feature: Show a resource
     Then the exit status should be 1
     And the output should contain "Forbidden"
     
+  # No read privileges in possum
+  @possum-wip
   Scenario: You can show any resource if you have a privilege on it
     Once alice has a permission to fry bacon, she can show everything
     about bacon.

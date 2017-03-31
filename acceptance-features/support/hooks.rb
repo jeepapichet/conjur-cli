@@ -2,6 +2,7 @@
 require 'conjur/api'
 require 'conjur/cli'
 require 'conjur/authn'
+require 'conjur/patches'
 
 netrc = Conjur::Authn.netrc
 username, password = Conjur::Authn.get_credentials
@@ -14,39 +15,57 @@ Aruba.configure do |config|
 end
 
 Before('@conjurapi-log') do
-  set_env 'CONJURAPI_LOG', 'stderr'
+  set_environment_variable 'CONJURAPI_LOG', 'stderr'
 end
 
 Before do
   step %Q(I set the environment variable "CONJUR_AUTHN_LOGIN" to "#{username}")
   step %Q(I set the environment variable "CONJUR_AUTHN_API_KEY" to "#{password}")
+  set_environment_variable 'CONJURAPI_LOG', 'stderr' if ENV['DEBUG']
 
   @admin_api = Conjur::Authn.connect
-  @test_user = admin_api.create_user "admin@#{namespace}", ownerid: "#{Conjur.configuration.account}:user:#{username}"
 
-  @security_admin = admin_api.create_group [ namespace, "security_admin" ].join('/')
-  @security_admin.add_member test_user, admin_option: true
+  response = @admin_api.load 'bootstrap', <<-POLICY, method: :put
+  - !user admin@#{namespace}
+
+  - !policy
+    id: #{namespace}
+    owner: !user admin@#{namespace}
+    body:
+    - !group security_admin
+  POLICY
+
+  login = "admin@#{namespace}"
+  api_key = response['created_roles']["cucumber:user:#{login}"]['api_key']
+
+  @test_user = @admin_api.user login
+#  @admin_api = Conjur::Authn.connect
+#  @test_user = admin_api.create_user "admin@#{namespace}", ownerid: "#{Conjur.configuration.account}:user:#{username}"
+
+#  @security_admin = security_admin = admin_api.group "#{namespace}/security_admin"
+#  @security_admin = admin_api.create_group [ namespace, "security_admin" ].join('/')
+#  @security_admin.add_member test_user, admin_option: true
   
-  JsonSpec.memorize "MY_ROLEID", %Q("#{test_user.roleid}")
+  JsonSpec.memorize "MY_ROLEID", "cucumber:user:#{login}"
   JsonSpec.memorize "NAMESPACE", namespace
   
-  admin_api.group("pubkeys-1.0/key-managers").add_member @security_admin
-  admin_api.resource('!:!:conjur').permit 'elevate', test_user, grant_option: true
-  admin_api.resource('!:!:conjur').permit 'reveal',  test_user, grant_option: true
+#  admin_api.group("pubkeys-1.0/key-managers").add_member @security_admin
+#  admin_api.resource('!:!:conjur').permit 'elevate', test_user, grant_option: true
+#  admin_api.resource('!:!:conjur').permit 'reveal',  test_user, grant_option: true
   
-  admin_api.create_user "attic@#{namespace}"
+#  admin_api.create_user "attic@#{namespace}"
 
   # Set up the environment so the CLI will authenticate
   # correctly. Note that the API caches credentials, so these
   # variables won't have any effect on future calls to
   # Conjur::Authn.connect
-  step %Q(I set the environment variable "CONJUR_AUTHN_LOGIN" to "#{test_user.login}")
-  step %Q(I set the environment variable "CONJUR_AUTHN_API_KEY" to "#{test_user.api_key}")
+  step %Q(I set the environment variable "CONJUR_AUTHN_LOGIN" to "#{login}")
+  step %Q(I set the environment variable "CONJUR_AUTHN_API_KEY" to "#{api_key}")
 end
 
 After do
   if admin_api
-    admin_api.group("pubkeys-1.0/key-managers").remove_member @security_admin
+#    admin_api.group("pubkeys-1.0/key-managers").remove_member @security_admin
     admin_api = nil
     namespace = nil
   end

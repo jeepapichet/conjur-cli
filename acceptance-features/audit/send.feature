@@ -1,3 +1,4 @@
+@possum-wip
 Feature: Create custom audit events
 
     Background:
@@ -22,7 +23,6 @@ Feature: Create custom audit events
         When I successfully run `conjur audit send '{"action":"login", "resource_id":"host:server"}'`
         And I run `conjur audit all -s`
         Then the output should match /user:joe@.* reported login on .*:host:server/
-
 
     Scenario: 'Allowed' flag
         When I successfully run `conjur audit send '{"action":"login", "allowed": false}'`

@@ -115,6 +115,7 @@ module Conjur
 
     pre do |global,command,options,args|
       require 'conjur/api'
+      require 'conjur/patches'
 
       if command.name_for_help.first == "init" and options.has_key?("account")
         ENV["CONJUR_ACCOUNT"]=options["account"]

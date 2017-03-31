@@ -5,6 +5,8 @@ Feature: Create a layer
     Then the JSON response at "id" should include "test_layer"
     And the JSON response at "hosts" should be []
   
+  # The owner is the policy, not the security_admin group
+  @possum-wip
   Scenario: Create a layer owned by the security_admin group
     When I successfully run `conjur layer create --as-group $ns/security_admin $ns/test_layer`
     Then the JSON response at "ownerid" should include "security_admin"

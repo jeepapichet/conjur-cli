@@ -1,10 +1,12 @@
 Feature: List members of a role
 
+  @possum-wip
   Scenario: Role members list is initally just the creator of the role
     When I successfully run `conjur role create job:$ns/chef`
     And I successfully run `conjur role members job:$ns/chef`
     Then the JSON should have 1 entries
 
+  @possum-wip
   Scenario: Members can be added to the role by granting them the role
     When I successfully run `conjur role create job:$ns/chef`
     And I successfully run `conjur user create alice@$ns`
@@ -12,6 +14,7 @@ Feature: List members of a role
     And I successfully run `conjur role members job:$ns/chef`
     Then the JSON should have 2 entries
 
+  @possum-wip
   Scenario: Members list is not expanded transitively
     When I successfully run `conjur role create job:$ns/chef`
     And I successfully run `conjur group create $ns/cooks`

@@ -1,3 +1,4 @@
+@possum-wip
 Feature: Retire a user
   Background:
     When I successfully run `conjur user create --as-role user:admin@$ns alice@$ns`

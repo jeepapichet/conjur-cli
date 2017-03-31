@@ -13,6 +13,8 @@ Feature: Create a Resource
     And I successfully run `conjur resource check food:$ns/bacon fry`
     Then the stdout should contain exactly "true"
 
+  # --as-role is not implemented
+  @possum-wip
   Scenario: A different role can be assigned as the owner of the resource
     When I successfully run `conjur role create job:$ns/chefs`
     And I successfully run `conjur resource create --as-role job:$ns/chefs food:$ns/bacon`
