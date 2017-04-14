@@ -1,3 +1,4 @@
+@possum-wip
 Feature: Register a public key
 
   Background:

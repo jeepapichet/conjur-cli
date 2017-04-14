@@ -4,6 +4,7 @@ Feature: Add hosts to layer
     Given I run `conjur layer create $ns/testlayer`
     And I run `conjur host create $ns.example.com`
     
+  @possum-wip
   Scenario: Add host to layer
     When I successfully run `conjur layer hosts add $ns/testlayer $ns.example.com`
     Then the output should contain "Host added"

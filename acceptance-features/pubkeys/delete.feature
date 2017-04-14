@@ -1,3 +1,4 @@
+@possum-wip
 Feature: Remove a public key
 
   Background:

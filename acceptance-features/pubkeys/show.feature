@@ -1,3 +1,4 @@
+@possum-wip
 Feature: Show public keys for a user
 
   Background:
