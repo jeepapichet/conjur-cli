@@ -17,7 +17,6 @@ Transform /^table:/ do |table|
   end
 end
 
-
 Then /^I reset the command list/ do
   aruba.command_monitor.clear
 end
@@ -29,7 +28,7 @@ When /^the command completes successfully/ do
 end
 
 Then /^I send the audit event:/ do |event|
-  step "I run `env RESTCLIENT_LOG=stderr conjur audit send` interactively"
+  step "I run `conjur audit send` interactively"
   last_command_started.write event
   last_command_started.close_io :stdin
   step "the command completes successfully"

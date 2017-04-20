@@ -14,8 +14,17 @@ Aruba.configure do |config|
   config.io_wait_timeout = 2
 end
 
+Before do
+  # Print stack traces
+  set_environment_variable 'GLI_DEBUG', 'true'
+end
+
 Before('@conjurapi-log') do
   set_environment_variable 'CONJURAPI_LOG', 'stderr'
+end
+
+Before('@restclient-log') do
+  set_environment_variable 'RESTCLIENT_LOG', 'stderr'
 end
 
 Before do
@@ -43,7 +52,7 @@ Before do
 #  @test_user = admin_api.create_user "admin@#{namespace}", ownerid: "#{Conjur.configuration.account}:user:#{username}"
 
 #  @security_admin = security_admin = admin_api.group "#{namespace}/security_admin"
-#  @security_admin = admin_api.create_group [ namespace, "security_admin" ].join('/')
+  @security_admin = admin_api.group [ namespace, "security_admin" ].join('/')
 #  @security_admin.add_member test_user, admin_option: true
   
   JsonSpec.memorize "MY_ROLEID", "cucumber:user:#{login}"

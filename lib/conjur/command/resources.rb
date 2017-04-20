@@ -166,8 +166,10 @@ class Conjur::Command::Resources < Conjur::Command
           value = require_arg args, 'value'
           { name => value }
         end
+        annotations.each do |name, value|
+          api.resource(id).annotations[name] = value
+        end
         unless annotations.blank?
-          api.resource(id).annotations.merge!(annotations)
           puts "Set annotations #{annotations.keys} for resource '#{id}'"
         end
       end

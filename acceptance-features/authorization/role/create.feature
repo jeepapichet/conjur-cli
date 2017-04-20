@@ -6,7 +6,8 @@ Feature: Create a Role
     And the output should contain "Created role"
 
   # When the new role is created in the policy, there is no role grant to
-  # the policy role.
+  # the policy role. The reason is that ownership is triggered by the resource
+  # conterpart of the role, which we aren't creating here.
   @possum-wip
   Scenario: Role owner has the new role listed in its memberships
     When I run `conjur role create --json job:$ns/chef`

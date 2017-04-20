@@ -1,4 +1,3 @@
-@possum-wip
 Feature: Create a Host Factory
 
   Background:
@@ -12,6 +11,8 @@ Feature: Create a Host Factory
     And I successfully run `conjur layer create $ns/layer`
     When I run `conjur hostfactory create --as-role user:unprivileged@$ns --layer $ns/layer $ns/hostfactory`
 
+  # The Possum adapter doesn't allow the new user to create resources within the existing policy
+  @possum-wip
 	Scenario: If current role cannot admin the layer, the error is reported
 		Given I successfully run `conjur layer create $ns/the-layer`
 		And I login as a new user
@@ -20,6 +21,8 @@ Feature: Create a Host Factory
 		Then the exit status should not be 0
 		And the output should contain "must be an admin of layer"
 	
+  # The Possum adapter doesn't allow the new user to create resources within the existing policy
+  @possum-wip
 	Scenario: If current role cannot admin the HF role, the error is reported
 		Given I successfully run `conjur group create $ns/the-group`
 		And I login as a new user

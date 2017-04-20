@@ -2,6 +2,42 @@ require 'conjur-api'
 
 module Conjur
   class API
+    def create_user(login, options = {})
+      options = options.merge \
+          cidr: [*options[:cidr]].map(&CIDR.method(:validate)).map(&:to_s) if options[:cidr]
+      standard_create Conjur::Core::API.host, :user, nil, options.merge(login: login)
+    end
+    
+    def create_group(id, options = {})
+      standard_create Conjur::Core::API.host, :group, id, options
+    end
+
+    def create_host options = nil
+      options = options.merge \
+          cidr: [*options[:cidr]].map(&CIDR.method(:validate)).map(&:to_s) if options[:cidr]
+      standard_create Conjur::Core::API.host, :host, nil, options
+    end
+
+    def create_layer(id, options = {})
+      standard_create Conjur::API.layer_asset_host, :layer, id, options
+    end
+    
+    def create_variable(mime_type, kind, options = {})
+      standard_create Conjur::Core::API.host, :variable, nil, options.merge(mime_type: mime_type, kind: kind)
+    end
+
+    def create_host_factory(id, options = {})
+      options = options.slice(:id, :layers, :ownerid)
+      log do |logger|
+        logger << "Creating host_factory #{id}"
+        unless options.blank?
+          logger << " with options #{options.to_json}"
+        end
+      end
+      options ||= {}
+      standard_create Conjur::API.host_factory_asset_host, 'host_factory', id, options
+    end
+
     def load id, policy, method: :post
       log do |logger|
         logger << "Loading policy #{id}:\n#{policy}"
@@ -32,7 +68,6 @@ module Conjur
     end
   end
 
-
   module StandardMethods
     include PolicyHelper
     
@@ -61,18 +96,49 @@ module Conjur
           logger << " with options #{options.to_json}"
         end
       end
-
-      if owner = options.delete(:ownerid)
+      
+      policy = <<-POLICY
+- !#{type}
+  id: #{PolicyHelper.role_id(id)}
+      POLICY
+      
+      owner = options.delete(:ownerid)
+      if owner
         $stderr.puts "Warning: owner #{owner} is specified, but ownership will be assigned to the policy #{PolicyHelper.policy_id id}"
+        $stderr.puts "The owner will be the owner of the policy"
+        owner_account, owner_kind, owner_id = owner.split(':', 3)
+        if owner_account.nil?
+          owner_id = owner_kind
+          owner_kind = owner_account
+          owner_account = Conjur.configuration.account
+        end
+        policy << "\n  owner: !role\n"
+        policy << "    account: #{owner_account}\n"
+        policy << "    kind: #{owner_kind}\n"
+        policy << "    id: /#{owner_id}"
+      end
+
+      layers = options.delete(:layers)
+      if layers
+        policy << "\n  layers:"
+        layers.each do |layer|
+          layer_id = if layer.is_a?(Conjur::Layer)
+            layer.id
+          elsif layer.is_a?(String)
+            layer
+          else
+            raise "Can't interpret layer #{layer}"
+          end
+          policy << "\n    - !layer #{layer_id.split('/')[1..-1].join('/')}"
+        end
       end
 
       attributes = options.compact.stringify_keys.to_yaml.split("\n")[1..-1].join("\n  ")
+      policy << "\n  #{attributes}"
+      
+      $stderr.puts policy
 
-      response = load PolicyHelper.policy_id(id), <<-POLICY
-- !#{type}
-  id: #{PolicyHelper.role_id(id)}
-  #{attributes}
-      POLICY
+      response = load PolicyHelper.policy_id(id), policy
 
       api_key = (response['created_roles']["#{Conjur.configuration.account}:#{type}:#{id}"]||{})['api_key']
 
@@ -113,6 +179,18 @@ module Conjur
   end
 
   class Annotations
+    # Set an annotation value.  This will perform an api call to set the annotation
+    #   on the server.
+    #
+    # @param [String, Symbol] name the annotation name
+    # @param [String] value the annotation value
+    #
+    # @return [String] the new annotation value
+    def []= name, value
+      update_annotation name.to_sym, value
+      value
+    end
+
     protected
 
     def update_annotation name, value
